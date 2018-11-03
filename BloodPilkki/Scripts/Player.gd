@@ -19,6 +19,9 @@ const SPEED = 10
 const ACCEL = 3.5
 const DEACCEL = 8
 
+const DEAD_ZONE = 0.2
+const ROTATION_SPEED = 0.1
+
 func _ready():
 	level = get_owner()
 	center = level.get_global_transform()
@@ -27,25 +30,45 @@ func _ready():
 
 func _physics_process(delta):
 	var dir = Vector3()
-	var player = "player_%d" % player_id
-	if Input.is_action_pressed('%s_move_forward' % player):
-		dir += -center.basis[2]
-	if Input.is_action_pressed('%s_move_backward' % player):
-		dir += center.basis[2]
-	if Input.is_action_pressed('%s_strafe_left' % player):
-		dir += -center.basis[0]
-	if Input.is_action_pressed('%s_strafe_right' % player):
-		dir += center.basis[0]
-	if Input.is_action_pressed('%s_action' % player):
-		if _actioning and not _action_debounce:
-			_perform_timed_action(delta)
-		else:
-			_try_start_action()
-	elif _actioning:
-		_stop_action()
-		
 	dir.y = 0
-	dir = dir.normalized()
+	
+	var player = "player_%d" % player_id
+	if Input.get_connected_joypads().size() > 0:
+		# Gamepad controls.
+		dir.x = Input.get_joy_axis(0, JOY_AXIS_0)
+		if abs(dir.x) < DEAD_ZONE:
+			dir.x = 0.0
+			
+		dir.z = Input.get_joy_axis(0, JOY_AXIS_1)
+		if abs(dir.z) < DEAD_ZONE:
+			dir.z = 0.0
+			
+		if Input.is_joy_button_pressed(0, JOY_XBOX_A):
+			if _actioning and not _action_debounce:
+				_perform_timed_action(delta)
+			else:
+				_try_start_action()
+		elif _actioning:
+			_stop_action()
+	else:
+		# Keyboard controls
+		if Input.is_action_pressed('%s_move_up' % player):
+			dir += -center.basis[2]
+		if Input.is_action_pressed('%s_move_down' % player):
+			dir += center.basis[2]
+		if Input.is_action_pressed('%s_move_left' % player):
+			dir += -center.basis[0]
+		if Input.is_action_pressed('%s_move_right' % player):
+			dir += center.basis[0]
+		if Input.is_action_pressed('%s_action' % player):
+			if _actioning and not _action_debounce:
+				_perform_timed_action(delta)
+			else:
+				_try_start_action()
+		elif _actioning:
+			_stop_action()
+		
+		dir = dir.normalized()
 	
 	velocity.y += delta * gravity
 	var hv = velocity
@@ -55,6 +78,27 @@ func _physics_process(delta):
 	var accel = DEACCEL
 	if dir.dot(hv) > 0:
 		accel = ACCEL
+
+	# Rotate the character based on movement direction
+	if dir.length() > 0.0:
+		var angle = atan2(velocity.x, velocity.z)
+		var current_rotation = get_rotation()
+		var turnCounterClocwise = false
+		if current_rotation.y < angle:
+			if angle - current_rotation.y <= PI:
+				turnCounterClocwise = true
+		else:
+			if current_rotation.y - angle > PI:
+				turnCounterClocwise = true
+		if turnCounterClocwise == false:
+			current_rotation.y += ROTATION_SPEED
+			if current_rotation.y > PI:
+				current_rotation.y -= 2*PI
+		else:
+			current_rotation.y -= ROTATION_SPEED
+			if current_rotation.y < -PI:
+				current_rotation.y += 2*PI
+		set_rotation(current_rotation)
 
 	hv = hv.linear_interpolate(new_pos, accel * delta)
 	velocity.x = hv.x

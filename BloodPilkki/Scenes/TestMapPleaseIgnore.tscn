@@ -63,7 +63,7 @@ uv2_triplanar_sharpness = 1.0
 proximity_fade_enable = false
 distance_fade_enable = false
 
-[sub_resource type="ConcavePolygonShape" id=6]
+[sub_resource type="ConcavePolygonShape" id=3]
 
 data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
 
@@ -120,7 +120,7 @@ constant_angular_velocity = Vector3( 0, 0, 0 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Map/MeshInstance/StaticBody" index="0"]
 
-shape = SubResource( 6 )
+shape = SubResource( 3 )
 disabled = false
 
 [node name="Sun" type="DirectionalLight" parent="Map" index="1"]
