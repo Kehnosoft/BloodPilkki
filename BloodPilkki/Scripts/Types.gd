@@ -5,4 +5,10 @@ enum Game_states {
 	ENDED = 3,
 	LOADING = 4,
 	SCORE_SCREEN = 5
-	}
+}
+	
+enum Fish {
+	BOOT = 0,
+	TROUT = 1,
+	SALMON = 2,
+}

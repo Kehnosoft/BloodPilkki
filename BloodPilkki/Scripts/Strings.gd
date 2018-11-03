@@ -14,3 +14,14 @@ static func game_state(current_game_state):
 	if not string:
 		string = "Unknown"
 	return string
+	
+static func fish(fish):
+	var strings = {
+		0: "Boot",
+		1: "Trout",
+		2: "Salmon",
+	}
+	var string = strings[fish]
+	if not string:
+		string = "Unknown"
+	return string

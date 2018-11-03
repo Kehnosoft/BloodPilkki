@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scripts/Level.gd" type="Script" id=1]
-[ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
-[ext_resource path="res://Scripts/DebugUI.gd" type="Script" id=3]
+[ext_resource path="res://Prefabs/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Prefabs/Hole.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scripts/DebugUI.gd" type="Script" id=4]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -66,22 +67,6 @@ distance_fade_enable = false
 
 data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
 
-[sub_resource type="BoxShape" id=4]
-
-extents = Vector3( 1, 1, 1 )
-
-[sub_resource type="CubeMesh" id=3]
-
-custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
-size = Vector3( 2, 2, 2 )
-subdivide_width = 0
-subdivide_height = 0
-subdivide_depth = 0
-
-[sub_resource type="SphereShape" id=5]
-
-radius = 1.0
-
 [node name="Root" type="Spatial" index="0"]
 
 script = ExtResource( 1 )
@@ -103,8 +88,6 @@ near = 0.05
 far = 100.0
 
 [node name="Map" type="Spatial" parent="." index="1"]
-
-editor/display_folded = true
 
 [node name="MeshInstance" type="MeshInstance" parent="Map" index="0"]
 
@@ -140,81 +123,47 @@ constant_angular_velocity = Vector3( 0, 0, 0 )
 shape = SubResource( 6 )
 disabled = false
 
+[node name="Sun" type="DirectionalLight" parent="Map" index="1"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 56.1012, 33.9559, 56.3573 )
+layers = 1
+light_color = Color( 1, 1, 1, 1 )
+light_energy = 1.0
+light_indirect_energy = 1.0
+light_negative = false
+light_specular = 0.5
+light_bake_mode = 1
+light_cull_mask = -1
+shadow_enabled = true
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_bias = 0.1
+shadow_contact = 0.0
+shadow_reverse_cull_face = false
+editor_only = false
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.1
+directional_shadow_split_2 = 0.2
+directional_shadow_split_3 = 0.5
+directional_shadow_blend_splits = false
+directional_shadow_normal_bias = 0.8
+directional_shadow_bias_split_scale = 0.25
+directional_shadow_depth_range = 0
+directional_shadow_max_distance = 200.0
+_sections_unfolded = [ "Light", "Shadow" ]
+
 [node name="Players" type="Spatial" parent="." index="2"]
 
-editor/display_folded = true
+_sections_unfolded = [ "Transform", "Visibility" ]
 
-[node name="Player" type="KinematicBody" parent="Players" index="0"]
+[node name="Player_1" parent="Players" index="0" instance=ExtResource( 2 )]
 
-editor/display_folded = true
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.212021, 0 )
-input_ray_pickable = true
-input_capture_on_drag = false
-collision_layer = 1
-collision_mask = 1
-axis_lock_linear_x = false
-axis_lock_linear_y = false
-axis_lock_linear_z = false
-axis_lock_angular_x = false
-axis_lock_angular_y = false
-axis_lock_angular_z = false
-collision/safe_margin = 0.001
-script = ExtResource( 2 )
-
-[node name="CollisionShape2" type="CollisionShape" parent="Players/Player" index="0"]
-
-transform = Transform( 1, 0, 0, 0, 2.5, 0, 0, 0, 1, 0, 2.47845, 0 )
-shape = SubResource( 4 )
-disabled = false
-
-[node name="Model" type="MeshInstance" parent="Players/Player" index="1"]
-
-transform = Transform( 1, 0, 0, 0, 2.5, 0, 0, 0, 1, 0, 2.47845, 0 )
-layers = 1
-material_override = null
-cast_shadow = 1
-extra_cull_margin = 0.0
-use_in_baked_light = false
-lod_min_distance = 0.0
-lod_min_hysteresis = 0.0
-lod_max_distance = 0.0
-lod_max_hysteresis = 0.0
-mesh = SubResource( 3 )
-skeleton = NodePath("..")
-material/0 = null
-_sections_unfolded = [ "Transform" ]
-
-[node name="Interaction" type="Area" parent="Players/Player" index="2"]
-
-input_ray_pickable = false
-input_capture_on_drag = false
-space_override = 0
-gravity_point = false
-gravity_distance_scale = 0.0
-gravity_vec = Vector3( 0, -1, 0 )
-gravity = 9.8
-linear_damp = 0.1
-angular_damp = 1.0
-priority = 0.0
-monitoring = true
-monitorable = true
-collision_layer = 1
-collision_mask = 1
-audio_bus_override = false
-audio_bus_name = "Master"
-reverb_bus_enable = false
-reverb_bus_name = "Master"
-reverb_bus_amount = 0.0
-reverb_bus_uniformity = 0.0
-
-[node name="CollisionShape" type="CollisionShape" parent="Players/Player/Interaction" index="0"]
-
-transform = Transform( 3.28249, 0, 0, 0, 3.28249, 0, 0, 0, 3.28249, 0, 2, 0 )
-shape = SubResource( 5 )
-disabled = false
-_sections_unfolded = [ "Transform" ]
+_sections_unfolded = [ "Transform", "Visibility" ]
 
 [node name="Holes" type="Spatial" parent="." index="3"]
+
+[node name="Hole" parent="Holes" index="0" instance=ExtResource( 3 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0439911, 0.0776315, -9.92822 )
 
 [node name="DebugUI" type="Control" parent="." index="4"]
 
@@ -231,7 +180,7 @@ mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-script = ExtResource( 3 )
+script = ExtResource( 4 )
 
 [node name="DebugHoleList" type="VBoxContainer" parent="DebugUI" index="0"]
 

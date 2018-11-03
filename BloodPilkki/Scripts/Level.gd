@@ -49,6 +49,7 @@ func _init_players():
 	for player in get_node("Players").get_children():
 		var id = 1 + len(players)
 		players.append([id, player])
+		scores.append([id, 0])
 	return players
 	
 func _get_player(player_id):
@@ -71,8 +72,8 @@ func _get_score(player_id):
 func add_score(player_id, score_gain):
 	var player_score = _get_score(player_id)
 	if player_score:
-		var score = clamp(scores[player_score] + score_gain, 0.0, 100.0)
-		scores[player_score] = score
-		
+		var score = clamp(player_score[1] + score_gain, 0.0, 100.0)
+		player_score[1] = score
 		if score > highest_score:
-			highest_score = score 
+			highest_score = score
+		print("Player %s scored %d points %s" % [player_id, score_gain, scores])

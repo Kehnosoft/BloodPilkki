@@ -90,7 +90,7 @@ func _stop_action():
 	_actioning = false
 	_action_timer = 0.0
 	_action_debounce = false
-	ui.hide_action_timer()
+	#ui.hide_action_timer()
 	
 func add_available_action(target):
 	# Waiting for a proper implementation
