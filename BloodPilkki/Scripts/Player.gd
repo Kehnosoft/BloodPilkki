@@ -20,7 +20,7 @@ const ACCEL = 3.5
 const DEACCEL = 8
 
 const DEAD_ZONE = 0.2
-const ROTATION_SPEED = 0.1
+const ROTATION_SPEED = 0.15
 
 func _ready():
 	level = get_owner()

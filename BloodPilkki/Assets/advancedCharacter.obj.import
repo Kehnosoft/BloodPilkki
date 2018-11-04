@@ -1,0 +1,17 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/advancedCharacter.obj-ec09bf5ad4e0c0428c80978eb8ce7d47.mesh"
+
+[deps]
+
+files=[ "res://.import/advancedCharacter.obj-ec09bf5ad4e0c0428c80978eb8ce7d47.mesh" ]
+
+source_file="res://Assets/advancedCharacter.obj"
+dest_files=[ "res://.import/advancedCharacter.obj-ec09bf5ad4e0c0428c80978eb8ce7d47.mesh", "res://.import/advancedCharacter.obj-ec09bf5ad4e0c0428c80978eb8ce7d47.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
