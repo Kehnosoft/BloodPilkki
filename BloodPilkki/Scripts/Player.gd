@@ -21,19 +21,16 @@ const DEACCEL = 8
 
 const DEAD_ZONE = 0.2
 const ROTATION_SPEED = 0.15
-const ROTATION_HYSTERESIS = 0.05
 
 func _ready():
 	level = get_owner()
 	center = level.get_global_transform()
 	ui = level.find_node("UI")
-	#level.printer.print_message("player %d ready" % player_id)
 
 func _physics_process(delta):
 	var dir = Vector3()
 	dir.y = 0
 	
-	var player = "player_%d" % player_id
 	if Input.get_connected_joypads().size() > 0:
 		# Gamepad controls.
 		dir.x = Input.get_joy_axis(0, JOY_AXIS_0)
@@ -51,23 +48,24 @@ func _physics_process(delta):
 				_try_start_action()
 		elif _actioning:
 			_stop_action()
-	else:
-		# Keyboard controls
-		if Input.is_action_pressed('%s_move_up' % player):
-			dir += -center.basis[2]
-		if Input.is_action_pressed('%s_move_down' % player):
-			dir += center.basis[2]
-		if Input.is_action_pressed('%s_move_left' % player):
-			dir += -center.basis[0]
-		if Input.is_action_pressed('%s_move_right' % player):
-			dir += center.basis[0]
-		if Input.is_action_pressed('%s_action' % player):
-			if _actioning and not _action_debounce:
-				_perform_timed_action(delta)
-			else:
-				_try_start_action()
-		elif _actioning:
-			_stop_action()
+			
+	# Keyboard controls
+	var player = "player_%d" % player_id
+	if Input.is_action_pressed('%s_move_up' % player):
+		dir += -center.basis[2]
+	if Input.is_action_pressed('%s_move_down' % player):
+		dir += center.basis[2]
+	if Input.is_action_pressed('%s_move_left' % player):
+		dir += -center.basis[0]
+	if Input.is_action_pressed('%s_move_right' % player):
+		dir += center.basis[0]
+	if Input.is_action_pressed('%s_action' % player):
+		if _actioning and not _action_debounce:
+			_perform_timed_action(delta)
+		else:
+			_try_start_action()
+	elif _actioning:
+		_stop_action()
 		
 		dir = dir.normalized()
 	
@@ -87,19 +85,18 @@ func _physics_process(delta):
 		var current_rotation = get_rotation()
 		var difference = max(angle, current_rotation.y) - min(angle, current_rotation.y)
 
-		if (difference > ROTATION_HYSTERESIS):
-			var rotation_direction_multiplier = 1.0
-			if current_rotation.y < angle:
-				if angle - current_rotation.y > PI:
-					rotation_direction_multiplier = -1.0
-			else:
-				if current_rotation.y - angle <= PI:
-					rotation_direction_multiplier = -1.0
-			
-			if difference < ROTATION_SPEED:
-				rotate_y(difference * rotation_direction_multiplier)
-			else:
-				rotate_y(ROTATION_SPEED * rotation_direction_multiplier)
+		var rotation_direction_multiplier = 1.0
+		if current_rotation.y < angle:
+			if angle - current_rotation.y > PI:
+				rotation_direction_multiplier = -1.0
+		else:
+			if current_rotation.y - angle <= PI:
+				rotation_direction_multiplier = -1.0
+		
+		if difference < ROTATION_SPEED:
+			rotate_y(difference * rotation_direction_multiplier)
+		else:
+			rotate_y(ROTATION_SPEED * rotation_direction_multiplier)
 
 	hv = hv.linear_interpolate(new_pos, accel * delta)
 	velocity.x = hv.x
