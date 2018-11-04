@@ -41,14 +41,6 @@ func _physics_process(delta):
 		if abs(dir.z) < DEAD_ZONE:
 			dir.z = 0.0
 			
-		if Input.is_joy_button_pressed(0, JOY_XBOX_A):
-			if _actioning and not _action_debounce:
-				_perform_timed_action(delta)
-			else:
-				_try_start_action()
-		elif _actioning:
-			_stop_action()
-			
 	# Keyboard controls
 	var player = "player_%d" % player_id
 	if Input.is_action_pressed('%s_move_up' % player):
@@ -59,16 +51,18 @@ func _physics_process(delta):
 		dir += -center.basis[0]
 	if Input.is_action_pressed('%s_move_right' % player):
 		dir += center.basis[0]
-	if Input.is_action_pressed('%s_action' % player):
+	
+	var key_action = Input.is_action_pressed('%s_action' % player) 
+	var pad_action = Input.is_joy_button_pressed(0, JOY_XBOX_A)
+	if key_action or pad_action:
 		if _actioning and not _action_debounce:
 			_perform_timed_action(delta)
 		else:
 			_try_start_action()
 	elif _actioning:
 		_stop_action()
-		
-		dir = dir.normalized()
-	
+
+	dir = dir.normalized()
 	velocity.y += delta * gravity
 	var hv = velocity
 	hv.y = 0
