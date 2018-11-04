@@ -21,6 +21,7 @@ const DEACCEL = 8
 
 const DEAD_ZONE = 0.2
 const ROTATION_SPEED = 0.15
+const ROTATION_HYSTERESIS = 0.05
 
 func _ready():
 	level = get_owner()
@@ -78,27 +79,27 @@ func _physics_process(delta):
 	var accel = DEACCEL
 	if dir.dot(hv) > 0:
 		accel = ACCEL
+		
 
 	# Rotate the character based on movement direction
-	if dir.length() > 0.0:
+	if Vector2(velocity.x, velocity.z).length() > 0.1:
 		var angle = atan2(velocity.x, velocity.z)
 		var current_rotation = get_rotation()
-		var turnCounterClocwise = false
-		if current_rotation.y < angle:
-			if angle - current_rotation.y <= PI:
-				turnCounterClocwise = true
-		else:
-			if current_rotation.y - angle > PI:
-				turnCounterClocwise = true
-		if turnCounterClocwise == false:
-			current_rotation.y += ROTATION_SPEED
-			if current_rotation.y > PI:
-				current_rotation.y -= 2*PI
-		else:
-			current_rotation.y -= ROTATION_SPEED
-			if current_rotation.y < -PI:
-				current_rotation.y += 2*PI
-		set_rotation(current_rotation)
+		var difference = max(angle, current_rotation.y) - min(angle, current_rotation.y)
+
+		if (difference > ROTATION_HYSTERESIS):
+			var rotation_direction_multiplier = 1.0
+			if current_rotation.y < angle:
+				if angle - current_rotation.y > PI:
+					rotation_direction_multiplier = -1.0
+			else:
+				if current_rotation.y - angle <= PI:
+					rotation_direction_multiplier = -1.0
+			
+			if difference < ROTATION_SPEED:
+				rotate_y(difference * rotation_direction_multiplier)
+			else:
+				rotate_y(ROTATION_SPEED * rotation_direction_multiplier)
 
 	hv = hv.linear_interpolate(new_pos, accel * delta)
 	velocity.x = hv.x

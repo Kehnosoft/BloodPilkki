@@ -64,9 +64,8 @@ distance_fade_enable = false
 
 radius = 1.0
 
-[node name="Player_1" type="KinematicBody"]
+[node name="Player_1" type="KinematicBody" index="0"]
 
-editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.212021, 0 )
 input_ray_pickable = true
 input_capture_on_drag = false
@@ -89,7 +88,7 @@ disabled = false
 
 [node name="Model" type="MeshInstance" parent="." index="1"]
 
-transform = Transform( -0.3, 0, -2.62268e-008, 0, 0.3, 0, 2.62268e-008, 0, -0.3, 0, 0, 0 )
+transform = Transform( 0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0 )
 layers = 1
 material_override = SubResource( 2 )
 cast_shadow = 1
