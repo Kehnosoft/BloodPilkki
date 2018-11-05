@@ -1,19 +1,28 @@
 extends KinematicBody
 
-var player_id = 1
+var player_id = 0
 var level = null
 var center = null
 var ui = null
 
+var hitpoints = 0.0
+var fast_damage = [10.0, 15.0]
+var heavy_damage = [15.0, 25.0]
+var damage_mod = 1.0
+
 var gravity = -9.8
 var velocity = Vector3()
-var fatigue_mod = 1
 
+var _dead = false
 var _actioning = false
+var _attacking = false
 var _action_debounce = false
 var _action_timer = 0.0
+var _attack_timer = 0.0
 var _available_action_targets = []
+var _available_attack_targets = []
 var _action_target = null
+var _attack_target = null
 
 const SPEED = 10
 const ACCEL = 3.5
@@ -22,10 +31,14 @@ const DEACCEL = 8
 const DEAD_ZONE = 0.2
 const ROTATION_SPEED = 0.15
 
+const ATTACK_SPEED = 20
+
 func _ready():
 	level = get_owner()
 	center = level.get_global_transform()
 	ui = level.find_node("UI")
+	
+	hitpoints = 100.0
 
 func _physics_process(delta):
 	var dir = Vector3()
@@ -61,6 +74,17 @@ func _physics_process(delta):
 			_try_start_action()
 	elif _actioning:
 		_stop_action()
+		
+	var key_fast_attack = Input.is_action_pressed('%s_fast_attack' % player) 
+	var pad_fast_attack = Input.is_joy_button_pressed(0, JOY_XBOX_X)
+	if (key_fast_attack or pad_fast_attack):
+		_try_start_attack()
+		
+	if _attacking:
+		if _attack_timer >= ATTACK_SPEED:
+			_stop_the_attack()
+		else:
+			_attack_timer += 1
 
 	dir = dir.normalized()
 	velocity.y += delta * gravity
@@ -96,6 +120,17 @@ func _physics_process(delta):
 	velocity.x = hv.x
 	velocity.z = hv.z
 	velocity = move_and_slide(velocity, Vector3(0, 1, 0))
+
+func _try_start_attack():
+	if not _attacking:
+		_attacking = true
+		_attack_timer = 0.0
+		for target in _available_attack_targets:
+			_attack(target)
+		
+func _stop_the_attack():
+	_attacking = false
+	_attack_timer = 0.0
 
 func _try_start_action():
 	if not _actioning and _available_action_targets:
@@ -144,3 +179,19 @@ func remove_available_action(target):
 		if _available_action_targets[i] == target:
 			_available_action_targets.remove(i)
 			target.hide_action_indicator()
+			
+func _die():
+	print("%s dies" % self.name)
+	_dead = true
+	self.rotate(Vector3(1, 0, 0), 90)
+			
+func take_damage(damage):
+	if not _dead:
+		hitpoints -= damage
+		if hitpoints <= 0:
+			_die()
+			
+func _attack(target):
+	var damage = rand_range(fast_damage[0], fast_damage[1])
+	target.take_damage(damage)
+	print("%s attacks %s for %.2f damage" % [self.name, target.name, damage])

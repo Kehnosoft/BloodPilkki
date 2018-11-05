@@ -159,6 +159,10 @@ _sections_unfolded = [ "Transform", "Visibility" ]
 
 _sections_unfolded = [ "Transform", "Visibility" ]
 
+[node name="Player_2" parent="Players" index="1" instance=ExtResource( 2 )]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.44946, 0.212021, -9.6863 )
+
 [node name="Holes" type="Spatial" parent="." index="3"]
 
 [node name="Hole" parent="Holes" index="0" instance=ExtResource( 3 )]
