@@ -1,19 +1,27 @@
 extends KinematicBody
 
-var player_id = 1
+var player_id = 0
 var level = null
 var center = null
 var ui = null
 
+var hitpoints = 0.0
+var fast_damage = 5.0
+var heavy_damage = 15.0
+var damage_mod = 1.0
+
 var gravity = -9.8
 var velocity = Vector3()
-var fatigue_mod = 1
 
 var _actioning = false
 var _action_debounce = false
+var _attack_debounce = false
 var _action_timer = 0.0
+var _attack_timer = 0.0
 var _available_action_targets = []
+var _available_attack_targets = []
 var _action_target = null
+var _attack_target = null
 
 const SPEED = 10
 const ACCEL = 3.5
@@ -26,6 +34,8 @@ func _ready():
 	level = get_owner()
 	center = level.get_global_transform()
 	ui = level.find_node("UI")
+	
+	hitpoints = 100.0
 
 func _physics_process(delta):
 	var dir = Vector3()
