@@ -1,13 +1,16 @@
 extends KinematicBody
 
 var player_id = 0
+var player_id_string = ""
 var level = null
 var center = null
 var ui = null
 
+const FAST_ATTACK_SPEED = 20
+const SLOW_ATTACK_SPEED = 40
 var hitpoints = 0.0
-var fast_damage = [10.0, 15.0]
-var heavy_damage = [15.0, 25.0]
+var fast_attack = [10.0, 15.0, FAST_ATTACK_SPEED]
+var heavy_attack = [15.0, 25.0, SLOW_ATTACK_SPEED]
 var damage_mod = 1.0
 
 var gravity = -9.8
@@ -19,6 +22,7 @@ var _attacking = false
 var _action_debounce = false
 var _action_timer = 0.0
 var _attack_timer = 0.0
+var _current_attack_speed = 0.0
 var _available_action_targets = []
 var _available_attack_targets = []
 var _action_target = null
@@ -31,19 +35,27 @@ const DEACCEL = 8
 const DEAD_ZONE = 0.2
 const ROTATION_SPEED = 0.15
 
-const ATTACK_SPEED = 20
-
 func _ready():
 	level = get_owner()
 	center = level.get_global_transform()
 	ui = level.find_node("UI")
-	
 	hitpoints = 100.0
-
+	
+func set_player_id(id):
+	player_id = id
+	player_id_string = "player_%d" % player_id
+	
 func _physics_process(delta):
+	if player_id == 0:
+		return
+
+	_handle_movement(delta)
+	_handle_actions(delta)
+	_handle_attacks()
+	
+func _handle_movement(delta):
 	var dir = Vector3()
 	dir.y = 0
-	
 	if Input.get_connected_joypads().size() > 0:
 		# Gamepad controls.
 		dir.x = Input.get_joy_axis(0, JOY_AXIS_0)
@@ -55,36 +67,14 @@ func _physics_process(delta):
 			dir.z = 0.0
 			
 	# Keyboard controls
-	var player = "player_%d" % player_id
-	if Input.is_action_pressed('%s_move_up' % player):
+	if Input.is_action_pressed('%s_move_up' % player_id_string):
 		dir += -center.basis[2]
-	if Input.is_action_pressed('%s_move_down' % player):
+	if Input.is_action_pressed('%s_move_down' % player_id_string):
 		dir += center.basis[2]
-	if Input.is_action_pressed('%s_move_left' % player):
+	if Input.is_action_pressed('%s_move_left' % player_id_string):
 		dir += -center.basis[0]
-	if Input.is_action_pressed('%s_move_right' % player):
+	if Input.is_action_pressed('%s_move_right' % player_id_string):
 		dir += center.basis[0]
-	
-	var key_action = Input.is_action_pressed('%s_action' % player) 
-	var pad_action = Input.is_joy_button_pressed(0, JOY_XBOX_A)
-	if key_action or pad_action:
-		if _actioning and not _action_debounce:
-			_perform_timed_action(delta)
-		else:
-			_try_start_action()
-	elif _actioning:
-		_stop_action()
-		
-	var key_fast_attack = Input.is_action_pressed('%s_fast_attack' % player) 
-	var pad_fast_attack = Input.is_joy_button_pressed(0, JOY_XBOX_X)
-	if (key_fast_attack or pad_fast_attack):
-		_try_start_attack()
-		
-	if _attacking:
-		if _attack_timer >= ATTACK_SPEED:
-			_stop_the_attack()
-		else:
-			_attack_timer += 1
 
 	dir = dir.normalized()
 	velocity.y += delta * gravity
@@ -96,7 +86,6 @@ func _physics_process(delta):
 	if dir.dot(hv) > 0:
 		accel = ACCEL
 		
-
 	# Rotate the character based on movement direction
 	if Vector2(velocity.x, velocity.z).length() > 0.1:
 		var angle = atan2(velocity.x, velocity.z)
@@ -120,17 +109,72 @@ func _physics_process(delta):
 	velocity.x = hv.x
 	velocity.z = hv.z
 	velocity = move_and_slide(velocity, Vector3(0, 1, 0))
-
-func _try_start_attack():
+	
+	
+############
+# Fighting #
+############
+func _handle_attacks():
+	# Attacks	
+	var key_fast_attack = Input.is_action_pressed('%s_fast_attack' % player_id_string) 
+	var pad_fast_attack = Input.is_joy_button_pressed(0, JOY_XBOX_X)
+	if (key_fast_attack or pad_fast_attack):
+		_try_start_attack(fast_attack)
+		
+	var key_heavy_attack = Input.is_action_pressed('%s_heavy_attack' % player_id_string) 
+	var pad_heavy_attack = Input.is_joy_button_pressed(0, JOY_XBOX_Y)
+	if (key_heavy_attack or pad_heavy_attack):
+		_try_start_attack(heavy_attack)
+		
+	if _attacking:
+		if _attack_timer >= _current_attack_speed:
+			_stop_the_attack()
+		else:
+			_attack_timer += 1
+			
+func _try_start_attack(attack):
 	if not _attacking:
 		_attacking = true
 		_attack_timer = 0.0
+		_current_attack_speed = attack[2]
 		for target in _available_attack_targets:
-			_attack(target)
+			_attack(target, attack)
 		
 func _stop_the_attack():
 	_attacking = false
 	_attack_timer = 0.0
+	
+func _die():
+	print("%s dies" % self.name)
+	_dead = true
+	self.rotate(Vector3(1, 0, 0), 90)
+			
+func take_damage(damage):
+	if not _dead:
+		hitpoints -= damage
+		if hitpoints <= 0:
+			_die()
+			
+func _attack(target, attack):
+	var damage = rand_range(attack[0], attack[1])
+	target.take_damage(damage)
+	print("%s attacks %s for %.2f damage" % [self.name, target.name, damage])
+	
+	
+###########
+# Actions #
+###########
+func _handle_actions(delta):
+	# Actions
+	var key_action = Input.is_action_pressed('%s_action' % player_id_string) 
+	var pad_action = Input.is_joy_button_pressed(0, JOY_XBOX_A)
+	if key_action or pad_action:
+		if _actioning and not _action_debounce:
+			_perform_timed_action(delta)
+		else:
+			_try_start_action()
+	elif _actioning:
+		_stop_action()
 
 func _try_start_action():
 	if not _actioning and _available_action_targets:
@@ -164,11 +208,6 @@ func _stop_action():
 	#ui.hide_action_timer()
 	
 func add_available_action(target):
-	# Waiting for a proper implementation
-#	for t in _available_action_targets:
-#		if t == target:
-#			return
-
 	if len(_available_action_targets) > 0:
 		return
 	target.show_action_indicator()
@@ -179,19 +218,3 @@ func remove_available_action(target):
 		if _available_action_targets[i] == target:
 			_available_action_targets.remove(i)
 			target.hide_action_indicator()
-			
-func _die():
-	print("%s dies" % self.name)
-	_dead = true
-	self.rotate(Vector3(1, 0, 0), 90)
-			
-func take_damage(damage):
-	if not _dead:
-		hitpoints -= damage
-		if hitpoints <= 0:
-			_die()
-			
-func _attack(target):
-	var damage = rand_range(fast_damage[0], fast_damage[1])
-	target.take_damage(damage)
-	print("%s attacks %s for %.2f damage" % [self.name, target.name, damage])

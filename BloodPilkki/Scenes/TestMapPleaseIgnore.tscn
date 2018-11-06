@@ -67,7 +67,7 @@ distance_fade_enable = false
 
 data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
 
-[node name="Root" type="Spatial"]
+[node name="Root" type="Spatial" index="0"]
 
 script = ExtResource( 1 )
 

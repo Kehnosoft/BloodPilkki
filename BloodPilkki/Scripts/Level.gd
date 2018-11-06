@@ -48,7 +48,7 @@ func _init_players():
 	var players = []
 	for player in get_node("Players").get_children():
 		var id = 1 + len(players)
-		player.player_id = id
+		player.set_player_id(id)
 		players.append([id, player])
 		scores.append([id, 0])
 	return players
