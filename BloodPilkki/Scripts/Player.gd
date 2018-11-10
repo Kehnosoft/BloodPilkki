@@ -40,11 +40,11 @@ func _ready():
 	center = level.get_global_transform()
 	ui = level.find_node("UI")
 	hitpoints = 100.0
-	
+
 func set_player_id(id):
 	player_id = id
 	player_id_string = "player_%d" % player_id
-	
+
 func _physics_process(delta):
 	if player_id == 0:
 		return
@@ -52,7 +52,10 @@ func _physics_process(delta):
 	_handle_movement(delta)
 	_handle_actions(delta)
 	_handle_attacks()
-	
+
+############
+# Movement #
+############
 func _handle_movement(delta):
 	var dir = Vector3()
 	dir.y = 0
@@ -75,7 +78,7 @@ func _handle_movement(delta):
 		dir += -center.basis[0]
 	if Input.is_action_pressed('%s_move_right' % player_id_string):
 		dir += center.basis[0]
-
+	
 	dir = dir.normalized()
 	velocity.y += delta * gravity
 	var hv = velocity
@@ -91,7 +94,7 @@ func _handle_movement(delta):
 		var angle = atan2(velocity.x, velocity.z)
 		var current_rotation = get_rotation()
 		var difference = max(angle, current_rotation.y) - min(angle, current_rotation.y)
-
+		
 		var rotation_direction_multiplier = 1.0
 		if current_rotation.y < angle:
 			if angle - current_rotation.y > PI:
@@ -104,13 +107,12 @@ func _handle_movement(delta):
 			rotate_y(difference * rotation_direction_multiplier)
 		else:
 			rotate_y(ROTATION_SPEED * rotation_direction_multiplier)
-
+	
 	hv = hv.linear_interpolate(new_pos, accel * delta)
 	velocity.x = hv.x
 	velocity.z = hv.z
 	velocity = move_and_slide(velocity, Vector3(0, 1, 0))
-	
-	
+
 ############
 # Fighting #
 ############
@@ -131,7 +133,7 @@ func _handle_attacks():
 			_stop_the_attack()
 		else:
 			_attack_timer += 1
-			
+
 func _try_start_attack(attack):
 	if not _attacking:
 		_attacking = true
@@ -139,28 +141,27 @@ func _try_start_attack(attack):
 		_current_attack_speed = attack[2]
 		for target in _available_attack_targets:
 			_attack(target, attack)
-		
+
 func _stop_the_attack():
 	_attacking = false
 	_attack_timer = 0.0
-	
+
 func _die():
 	print("%s dies" % self.name)
 	_dead = true
 	self.rotate(Vector3(1, 0, 0), 90)
-			
+
 func take_damage(damage):
 	if not _dead:
 		hitpoints -= damage
 		if hitpoints <= 0:
 			_die()
-			
+
 func _attack(target, attack):
 	var damage = rand_range(attack[0], attack[1])
 	target.take_damage(damage)
 	print("%s attacks %s for %.2f damage" % [self.name, target.name, damage])
-	
-	
+
 ###########
 # Actions #
 ###########
@@ -191,7 +192,7 @@ func _perform_timed_action(delta):
 	if not _action_target:
 		_stop_action()
 		return
-
+	
 	if _action_timer >= _action_target.ACTION_TIME:
 		_action_target.action_performed()
 		_stop_action()
@@ -206,7 +207,7 @@ func _stop_action():
 	_action_timer = 0.0
 	_action_debounce = false
 	#ui.hide_action_timer()
-	
+
 func add_available_action(target):
 	if len(_available_action_targets) > 0:
 		return

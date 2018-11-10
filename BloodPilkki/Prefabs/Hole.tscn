@@ -130,7 +130,7 @@ proximity_fade_enable = false
 distance_fade_enable = false
 _sections_unfolded = [ "Albedo" ]
 
-[node name="Hole" type="Spatial"]
+[node name="Hole" type="Spatial" index="0"]
 
 script = ExtResource( 1 )
 
@@ -182,7 +182,7 @@ _sections_unfolded = [ "material" ]
 
 [node name="InteractionIndicator" type="MeshInstance" parent="." index="2"]
 
-transform = Transform( -0.268025, 2.34315e-08, 0, -2.34315e-08, -0.268025, 0, 0, 0, 0.268025, 0, 6.09326, 0 )
+transform = Transform( -0.268025, 2.34315e-008, 0, -2.34315e-008, -0.268025, 0, 0, 0, 0.268025, 0, 6.09326, 0 )
 layers = 1
 material_override = null
 cast_shadow = 1
