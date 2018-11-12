@@ -5,49 +5,31 @@ var Types = load("res://Scripts/Types.gd")
 var level = null
 var ready = false
 
-var action_timer = null
-var action_timer_bar = null
-var action_time_left = null
-
-var score_bar = null
-var fatigue_bar = null
+var respawn_timer = null
+var respawn_timer_bar = null
+var respawn_time_left = null
 
 func _ready():
 	level = get_owner()
-	action_timer = find_node("ActionTimerContainer")
-	action_timer_bar = find_node("ActionTimerProgressBar")
-	action_time_left = find_node("ActionTimeLeft")
-	action_timer.hide()
-
-	score_bar = find_node("ScoreBar")
-	fatigue_bar = find_node("FatigueBar")
+	
+	respawn_timer = find_node("RespawnTimerContainer")
+	respawn_timer_bar = find_node("RespawnTimerProgressBar")
+	#respawn_time_left = find_node("RespawnTimeLeft")
 
 	ready = true
 	
 func _process(delta):
 	if not ready:
 		return
-	
 	_update_ui()
 	
 func _update_ui():
-	score_bar.set_value(level.score)
-	fatigue_bar.set_value(level.fatigue)
+	update_respawn_timer()
 
-func reset_action_timer():
-	action_timer_bar.set_value(0.0)
-	action_time_left.set_text("0")
-
-func show_action_timer():
-	reset_action_timer()
-	action_timer.show()
-
-func hide_action_timer():
-	action_timer.hide()
-	reset_action_timer()
-
-func update_action_timer(elapsed, action_time):
-	var progress_percent = elapsed / action_time * 100.0
-	var time_left = action_time - elapsed
-	action_timer_bar.set_value(progress_percent)
-	action_time_left.set_text("%.2fs" % time_left)
+func update_respawn_timer():
+	var respawn_time = level.RESPAWN_TIMER
+	var elapsed = level.get_respawn_time()
+	var progress_percent = 100 - (elapsed / respawn_time * 100.0)
+	var time_left = respawn_time - elapsed
+	respawn_timer_bar.set_value(progress_percent)
+	#respawn_time_left.set_text("%.2fs" % time_left)

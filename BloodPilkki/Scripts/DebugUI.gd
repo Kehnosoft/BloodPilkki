@@ -9,8 +9,7 @@ var messages = []
 
 func _ready():
 	level = get_owner()
-	if level.debug:
-		ready = true
+	ready = true
 	
 func _process(delta):
 	if not ready:
@@ -18,10 +17,10 @@ func _process(delta):
 	_update_ui()
 	
 func _update_ui():
-	var game_state = level.game_state
-	var players = level.players
-	var scores = level.scores
-	var available_tasks = level.holes
+	var game_state = level.get_game_state()
+	var players = level.get_players()
+	var scores = level.get_scores()
+	var available_tasks = level.get_holes()
 	
 	# Show gamestate
 	var debug_game_state = find_node("DebugGameStateValue")
@@ -34,7 +33,7 @@ func _update_ui():
 		debug_hole_list.remove_child(hole)
 	
 	# Refresh the list with new holes
-	for hole in level.holes:
+	for hole in level.get_holes():
 		var taskLabel = Label.new()
 		taskLabel.set_text(Strings.hole_status(hole))
 		debug_hole_list.add_child(taskLabel)

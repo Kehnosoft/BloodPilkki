@@ -2,59 +2,81 @@ extends Spatial
 
 var Types = load("res://Scripts/Types.gd")
 var Utils = load("res://Scripts/Utils.gd")
-var game_state = Types.Game_states.LOADING
+var Items = load("res://Scripts/Items.gd")
+var Debug_ui = null
+var Ui = null
+var Printer = null
 
-var debug = true
-var debug_ui = null
-var ui = null
-var printer = null
+var _game_state = Types.Game_states.LOADING
+var _debugging = true
+var _respawn_timer = 0
+var _highest_score = 0
 
-var players = []			# Array of competitors
-var holes = []				# Array of active holes in the ice
-var scores = []
-var highest_score = 0
+var _players = []			# Array of competitors
+var _holes = []				# Array of active holes in the ice
+var _scores = []
+var _spawners = []			# List of dead players
+
+var RESPAWN_TIMER = 10
 
 func _ready():
-	ui = find_node("UI")
-	debug_ui = find_node("DebugUI")
-	if debug:
-		debug_ui.show()
+	Ui = find_node("UI")
+	Debug_ui = find_node("DebugUI")
+	if _debugging:
+		Debug_ui.show()
 	else:
-		debug_ui.hide()
+		Debug_ui.hide()
 		
-	printer = Utils.Printer.new(ui, debug, debug_ui)
-	players = _init_players()
-	game_state = Types.Game_states.PLAYING
-	printer.print_message("Starting game with %d players and %d holes." % [len(players), len(holes)])
+	Printer = Utils.Printer.new(Ui, _debugging, Debug_ui)
+	Items = Items.Items.new()	# Init item tables
+	_spawners = _get_spawners()
+	_players = _init_players()
+	_game_state = Types.Game_states.PLAYING
+	Printer.print_message("Starting game with %d players and %d holes." % [len(_players), len(_holes)])
+	if _debugging:
+		var dev_hammer = Items.get_weapon("Dev hammer")
+		var dev_player = _players[1]
+		if dev_player:
+			dev_player.give_weapon(dev_hammer)
 	
 func _process(delta):
-	if game_state != Types.Game_states.ENDED and (highest_score >= 100):
+	if self._game_state != Types.Game_states.ENDED and (_highest_score >= 100):
 		_end_game()
-		
-# Some debug and timer shits for _physics_process
-var _score_bleed_timer = 1
-var _score_bleed_elapsed_secs = 0
-var _fatigue_timer = 1
-var _fatigue_elapsed_secs = 0
 
 func _physics_process(delta):
-	pass
+	if _respawn_timer >= RESPAWN_TIMER:
+		_respawn_players()
+		_respawn_timer = 0
+	else:
+		_respawn_timer += 0.1
 		
 func _end_game():
-	game_state = Types.Game_states.ENDED
+	_game_state = Types.Game_states.ENDED
 	print("Game over")
 	
 func _init_players():
 	var players = []
 	for player in get_node("Players").get_children():
-		var id = 1 + len(players)
-		player.set_player_id(id)
-		players.append([id, player])
-		scores.append([id, 0])
+		player.set_player_id(len(players))
+		players.append(player)
+		_scores.append([player.player_id, 0])
 	return players
 	
+func _get_spawners():
+	var spawners = []
+	for spawner in get_node("Spawners").get_children():
+		spawners.append(spawner)
+	return spawners
+	
+func _get_available_spawners():
+	var spawners = []
+	for spawner in _spawners:
+		if spawner.available:
+			spawners.append(spawner)
+	return spawners
+	
 func _get_player(player_id):
-	for player in players:
+	for player in _players:
 		if player[0] == player_id:
 			return player
 	
@@ -65,16 +87,50 @@ func _get_holes():
 	return holes
 	
 func _get_score(player_id):
-	for score in scores:
+	for score in _scores:
 		if score[0] == player_id:
 			return score
 	return null
+	
+func _respawn_players():
+	for spawner in _spawners:
+		spawner.respawn_players()
+	
+func player_killed(player):
+	var spawners = _get_available_spawners()
+	if spawners:
+		var spawner = spawners[0]
+		spawner.add_ghost(player)
+		player.visible = false
+		#Maybe spawn a decaying corpse?
 	
 func add_score(player_id, score_gain):
 	var player_score = _get_score(player_id)
 	if player_score:
 		var score = clamp(player_score[1] + score_gain, 0.0, 100.0)
 		player_score[1] = score
-		if score > highest_score:
-			highest_score = score
-		print("Player %s scored %d points %s" % [player_id, score_gain, scores])
+		if score > _highest_score:
+			_highest_score = score
+		print("Player %s scored %d points %s" % [player_id, score_gain, _scores])
+		
+		
+############
+# Plumbing #
+############
+func get_game_state():
+	return _game_state
+	
+func get_players():
+	return _players
+	
+func get_holes():
+	return _holes
+	
+func get_scores():
+	return _scores
+	
+func get_respawn_time():
+	return _respawn_timer
+	
+func debugging_mode_active():
+	return _debugging
