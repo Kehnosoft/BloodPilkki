@@ -27,6 +27,7 @@ var _available_action_targets = []
 var _available_attack_targets = []
 var _action_target = null
 var _attack_target = null
+var _weapon = null
 
 const SPEED = 10
 const ACCEL = 3.5
@@ -34,6 +35,8 @@ const DEACCEL = 8
 
 const DEAD_ZONE = 0.2
 const ROTATION_SPEED = 0.15
+
+const HITPOINTS = 100.0
 
 func _ready():
 	level = get_owner()
@@ -45,8 +48,18 @@ func set_player_id(id):
 	player_id = id
 	player_id_string = "player_%d" % player_id
 	
+func respawn():
+	_dead = false
+	hitpoints = HITPOINTS
+	
+func give_weapon(weapon):
+	_weapon = weapon
+	
+func is_dead():
+	return self._dead
+	
 func _physics_process(delta):
-	if player_id == 0:
+	if player_id == 0 or _dead:
 		return
 
 	_handle_movement(delta)
@@ -147,7 +160,7 @@ func _stop_the_attack():
 func _die():
 	print("%s dies" % self.name)
 	_dead = true
-	self.rotate(Vector3(1, 0, 0), 90)
+	level.player_killed(self)
 			
 func take_damage(damage):
 	if not _dead:
@@ -156,9 +169,23 @@ func take_damage(damage):
 			_die()
 			
 func _attack(target, attack):
-	var damage = rand_range(attack[0], attack[1])
+	if target.is_dead():
+		return
+	
+	var weapon_damage = [1, 1]
+	if _weapon:
+		weapon_damage = [_weapon.min_damage, _weapon.max_damage]
+		
+	var min_dmg = attack[0] * weapon_damage[0]
+	var max_dmg = attack[1] * weapon_damage[1]
+	var damage = rand_range(min_dmg, max_dmg)
 	target.take_damage(damage)
-	print("%s attacks %s for %.2f damage" % [self.name, target.name, damage])
+	
+	var weapon_str = ""
+	if _weapon:
+		weapon_str = " with %s" % _weapon.name
+		
+	print("%s attacks %s%s for %.2f damage" % [self.name, target.name, weapon_str, damage])
 	
 	
 ###########
