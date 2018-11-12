@@ -34,7 +34,7 @@ func _begin_fishing(fisher):
 			
 func _print_message(msg):
 	print(msg)
-	level.printer.print_message(msg)
+	level.Printer.print_message(msg)
 	
 func _fish(fisher, fish):
 	_print_message("\nStrike! %s" % [fish.message])
