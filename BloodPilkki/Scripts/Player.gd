@@ -5,6 +5,7 @@ var player_id_string = ""
 var level = null
 var center = null
 var ui = null
+var character = null
 
 const FAST_ATTACK_SPEED = 20
 const SLOW_ATTACK_SPEED = 40
@@ -38,10 +39,14 @@ const ROTATION_SPEED = 0.15
 
 const HITPOINTS = 100.0
 
+const ANIMATION_IDLE_LIMIT = 0.5
+
 func _ready():
 	level = get_owner()
 	center = level.get_global_transform()
 	ui = level.find_node("UI")
+	character = find_node("Character")
+	character.set_animation("idle")
 	hitpoints = 100.0
 
 func set_player_id(id):
@@ -125,6 +130,12 @@ func _handle_movement(delta):
 	velocity.x = hv.x
 	velocity.z = hv.z
 	velocity = move_and_slide(velocity, Vector3(0, 1, 0))
+	
+	# Player animation
+	if Vector2(velocity.x, velocity.z).length() > ANIMATION_IDLE_LIMIT:
+		character.set_animation("walk")
+	else:
+		character.set_animation("idle")
 
 ############
 # Fighting #

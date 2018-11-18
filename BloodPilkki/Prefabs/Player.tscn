@@ -81,7 +81,7 @@ _sections_unfolded = [ "Emission" ]
 
 radius = 1.0
 
-[node name="Player_1" type="KinematicBody"]
+[node name="Player_1" type="KinematicBody" index="0"]
 
 input_ray_pickable = true
 input_capture_on_drag = false
