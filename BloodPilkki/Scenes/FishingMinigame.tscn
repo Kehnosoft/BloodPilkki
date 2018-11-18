@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/FishingMinigame.gd" type="Script" id=1]
+[ext_resource path="res://Prefabs/Fishing.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Prefabs/FishOn.tscn" type="PackedScene" id=3]
 
 [node name="FishingMinigame" type="Spatial" index="0"]
 
@@ -22,5 +24,16 @@ size = 1.0
 near = 0.05
 far = 100.0
 _sections_unfolded = [ "Transform" ]
+
+[node name="Fishing" parent="." index="1" instance=ExtResource( 2 )]
+
+[node name="FishOn" parent="." index="2" instance=ExtResource( 3 )]
+
+[node name="FishingTimer" type="Timer" parent="." index="3"]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = true
+autostart = false
 
 
