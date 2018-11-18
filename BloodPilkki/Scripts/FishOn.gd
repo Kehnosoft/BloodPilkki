@@ -5,7 +5,7 @@ signal fish_on_complete(catch, points)
 var reel_in_bar = null
 var progress_percent = 50
 var _fish = null
-var player_strength = 3
+var player_strength = 3.5
 
 func _ready():
 	randomize()

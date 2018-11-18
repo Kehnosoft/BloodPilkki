@@ -49,9 +49,9 @@ func _is_action_button_pressed():
 ###################
 # Signal handlers #
 ###################
-func handle_fishing_complete(result):
+func handle_fishing_complete(outcome):
 	fishing.hide()
-	if result == true:
+	if outcome == true:
 		print ("Strike...")
 		start_fish_on()
 	else:
