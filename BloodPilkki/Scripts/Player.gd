@@ -133,7 +133,7 @@ func _handle_movement(delta):
 	
 	# Player animation
 	if Vector2(velocity.x, velocity.z).length() > ANIMATION_IDLE_LIMIT:
-		character.set_animation("walk")
+		character.set_animation("run")
 	else:
 		character.set_animation("idle")
 
