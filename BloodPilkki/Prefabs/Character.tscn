@@ -1,22 +1,28 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Assets/character.dae" type="PackedScene" id=1]
+[ext_resource path="res://Assets/character-20181118_b.dae" type="PackedScene" id=1]
 [ext_resource path="res://Scripts/CharacterAnimation.gd" type="Script" id=2]
-[ext_resource path="res://Assets/character.material" type="Material" id=3]
+[ext_resource path="res://Assets/character_body.material" type="Material" id=3]
+[ext_resource path="res://Assets/character_face.material" type="Material" id=4]
 
 [node name="Character" instance=ExtResource( 1 )]
 
-transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
 script = ExtResource( 2 )
+
+[node name="rig" parent="." index="0"]
+
 _sections_unfolded = [ "Transform" ]
 
-[node name="Body" parent="Armature/Skeleton" index="0"]
+[node name="character" parent="rig/Skeleton" index="0"]
 
 material/0 = ExtResource( 3 )
+material/1 = ExtResource( 4 )
 _sections_unfolded = [ "material" ]
 
 [node name="AnimationPlayer" parent="." index="1"]
 
-autoplay = "Walk-loop"
+autoplay = "idle-loop"
+playback_speed = 1.25
+_sections_unfolded = [ "Playback Options" ]
 
 
