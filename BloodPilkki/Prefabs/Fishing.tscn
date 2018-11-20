@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/Fishing.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Pow.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Pow.ogg" type="AudioStream" id=3]
 
 [node name="Fishing" type="Control"]
 
@@ -47,5 +49,21 @@ process_mode = 1
 wait_time = 2.0
 one_shot = true
 autostart = false
+
+[node name="Pow" type="Sprite" parent="." index="2"]
+
+visible = false
+position = Vector2( 543, 222.739 )
+scale = Vector2( 0.397647, 0.397647 )
+texture = ExtResource( 2 )
+
+[node name="PowSfx" type="AudioStreamPlayer" parent="." index="3"]
+
+stream = ExtResource( 3 )
+volume_db = 0.0
+pitch_scale = 1.0
+autoplay = false
+mix_target = 0
+bus = "Master"
 
 
