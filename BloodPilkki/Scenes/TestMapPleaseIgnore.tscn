@@ -1,16 +1,14 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Scripts/Level.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Environment/Textures/WinterForest_Env.hdr" type="Texture" id=2]
-[ext_resource path="res://Assets/Environment/Textures/ice_basecolor.png" type="Texture" id=3]
-[ext_resource path="res://Assets/Environment/Textures/ice_ARM.png" type="Texture" id=4]
-[ext_resource path="res://Assets/Environment/Textures/ice_normal.png" type="Texture" id=5]
-[ext_resource path="res://Prefabs/Tree.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Prefabs/Player.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Prefabs/Hole.tscn" type="PackedScene" id=8]
-[ext_resource path="res://Scripts/DebugUI.gd" type="Script" id=9]
-[ext_resource path="res://Scripts/UI.gd" type="Script" id=10]
-[ext_resource path="res://Scripts/Graveyard.gd" type="Script" id=11]
+[ext_resource path="res://Assets/Environment/Master.tres" type="Material" id=3]
+[ext_resource path="res://Prefabs/Tree.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Prefabs/Player.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Prefabs/Hole.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scripts/DebugUI.gd" type="Script" id=7]
+[ext_resource path="res://Scripts/UI.gd" type="Script" id=8]
+[ext_resource path="res://Scripts/Graveyard.gd" type="Script" id=9]
 
 [sub_resource type="PanoramaSky" id=1]
 
@@ -101,109 +99,18 @@ _sections_unfolded = [ "Ambient Light", "Background", "SSAO" ]
 
 custom_aabb = AABB( 0, 0, 0, 0, 0, 0 )
 size = Vector2( 2, 2 )
-subdivide_width = 0
-subdivide_depth = 0
+subdivide_width = 25
+subdivide_depth = 25
 
-[sub_resource type="SpatialMaterial" id=4]
-
-render_priority = 0
-flags_transparent = false
-flags_unshaded = false
-flags_vertex_lighting = false
-flags_no_depth_test = false
-flags_use_point_size = false
-flags_world_triplanar = false
-flags_fixed_size = false
-flags_albedo_tex_force_srgb = false
-vertex_color_use_as_albedo = false
-vertex_color_is_srgb = false
-params_diffuse_mode = 0
-params_specular_mode = 0
-params_blend_mode = 0
-params_cull_mode = 0
-params_depth_draw_mode = 0
-params_line_width = 1.0
-params_point_size = 1.0
-params_billboard_mode = 0
-params_grow = false
-params_use_alpha_scissor = false
-albedo_color = Color( 1, 1, 1, 1 )
-albedo_texture = ExtResource( 3 )
-metallic = 0.0
-metallic_specular = 0.5
-metallic_texture = ExtResource( 4 )
-metallic_texture_channel = 2
-roughness = 0.0
-roughness_texture = ExtResource( 4 )
-roughness_texture_channel = 1
-emission_enabled = false
-normal_enabled = true
-normal_scale = 1.0
-normal_texture = ExtResource( 5 )
-rim_enabled = false
-clearcoat_enabled = false
-anisotropy_enabled = false
-ao_enabled = true
-ao_light_affect = 0.0
-ao_texture = ExtResource( 4 )
-ao_on_uv2 = false
-ao_texture_channel = 0
-depth_enabled = false
-subsurf_scatter_enabled = false
-transmission_enabled = false
-refraction_enabled = true
-refraction_scale = 0.05
-refraction_texture_channel = 0
-detail_enabled = false
-uv1_scale = Vector3( 1.5, 1.5, 1.5 )
-uv1_offset = Vector3( 0, 0, 0 )
-uv1_triplanar = true
-uv1_triplanar_sharpness = 1.0
-uv2_scale = Vector3( 1, 1, 1 )
-uv2_offset = Vector3( 0, 0, 0 )
-uv2_triplanar = false
-uv2_triplanar_sharpness = 1.0
-proximity_fade_enable = false
-distance_fade_enable = false
-_sections_unfolded = [ "UV1" ]
-
-[sub_resource type="ConcavePolygonShape" id=5]
+[sub_resource type="ConcavePolygonShape" id=4]
 
 data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
 
-[node name="Root" type="Spatial"]
+[node name="Root" type="Spatial" index="0"]
 
 script = ExtResource( 1 )
 
-[node name="DirectionalLight" type="DirectionalLight" parent="." index="0"]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.70322, 30.3987, 39.4541 )
-layers = 1
-light_color = Color( 1, 1, 1, 1 )
-light_energy = 5.0
-light_indirect_energy = 1.0
-light_negative = false
-light_specular = 0.5
-light_bake_mode = 1
-light_cull_mask = -1
-shadow_enabled = true
-shadow_color = Color( 0, 0, 0, 1 )
-shadow_bias = 0.5
-shadow_contact = 0.0
-shadow_reverse_cull_face = false
-editor_only = false
-directional_shadow_mode = 2
-directional_shadow_split_1 = 1.0
-directional_shadow_split_2 = 1.0
-directional_shadow_split_3 = 1.0
-directional_shadow_blend_splits = false
-directional_shadow_normal_bias = 0.8
-directional_shadow_bias_split_scale = 0.25
-directional_shadow_depth_range = 1
-directional_shadow_max_distance = 500.0
-_sections_unfolded = [ "Directional Shadow", "Editor", "Shadow" ]
-
-[node name="Camera" type="Camera" parent="." index="1"]
+[node name="Camera" type="Camera" parent="." index="0"]
 
 transform = Transform( 1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 45, 25 )
 keep_aspect = 1
@@ -220,18 +127,17 @@ near = 0.05
 far = 100.0
 _sections_unfolded = [ "Transform" ]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." index="2"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." index="1"]
 
 environment = SubResource( 2 )
 
-[node name="Map" type="Spatial" parent="." index="3"]
+[node name="Map" type="Spatial" parent="." index="2"]
 
 [node name="MeshInstance" type="MeshInstance" parent="Map" index="0"]
 
-editor/display_folded = true
 transform = Transform( 50, 0, 0, 0, 50, 0, 0, 0, 50, 0, 0, 0 )
 layers = 1
-material_override = null
+material_override = ExtResource( 3 )
 cast_shadow = 1
 extra_cull_margin = 0.0
 use_in_baked_light = false
@@ -241,8 +147,8 @@ lod_max_distance = 0.0
 lod_max_hysteresis = 0.0
 mesh = SubResource( 3 )
 skeleton = NodePath("..")
-material/0 = SubResource( 4 )
-_sections_unfolded = [ "Transform", "material" ]
+material/0 = null
+_sections_unfolded = [ "Geometry", "Transform", "material" ]
 
 [node name="StaticBody" type="StaticBody" parent="Map/MeshInstance" index="0"]
 
@@ -259,41 +165,43 @@ _sections_unfolded = [ "Transform" ]
 
 [node name="CollisionShape" type="CollisionShape" parent="Map/MeshInstance/StaticBody" index="0"]
 
-shape = SubResource( 5 )
+shape = SubResource( 4 )
 disabled = false
 
-[node name="Tree" parent="Map" index="1" instance=ExtResource( 6 )]
+[node name="Tree" parent="Map" index="1" instance=ExtResource( 4 )]
 
 transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 7.94168, 0, 27.0544 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="Tree2" parent="Map" index="2" instance=ExtResource( 6 )]
+[node name="Tree2" parent="Map" index="2" instance=ExtResource( 4 )]
 
 transform = Transform( 1.05814, 0, -1.69716, 0, 2, 0, 1.69716, 0, 1.05814, -21.7334, 0, 4.2061 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="Players" type="Spatial" parent="." index="4"]
+[node name="Players" type="Spatial" parent="." index="3"]
+
+editor/display_folded = true
+_sections_unfolded = [ "Transform", "Visibility" ]
+
+[node name="Player_1" parent="Players" index="0" instance=ExtResource( 5 )]
 
 _sections_unfolded = [ "Transform", "Visibility" ]
 
-[node name="Player_1" parent="Players" index="0" instance=ExtResource( 7 )]
-
-_sections_unfolded = [ "Transform", "Visibility" ]
-
-[node name="Player_2" parent="Players" index="1" instance=ExtResource( 7 )]
+[node name="Player_2" parent="Players" index="1" instance=ExtResource( 5 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.44946, 0.212021, -9.6863 )
 
-[node name="Holes" type="Spatial" parent="." index="5"]
+[node name="Holes" type="Spatial" parent="." index="4"]
 
 editor/display_folded = true
 
-[node name="Hole" parent="Holes" index="0" instance=ExtResource( 8 )]
+[node name="Hole" parent="Holes" index="0" instance=ExtResource( 6 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0439911, 0.0776315, -9.92822 )
 
-[node name="DebugUI" type="Control" parent="." index="6"]
+[node name="DebugUI" type="Control" parent="." index="5"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -306,7 +214,7 @@ mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-script = ExtResource( 9 )
+script = ExtResource( 7 )
 
 [node name="DebugHoleList" type="VBoxContainer" parent="DebugUI" index="0"]
 
@@ -399,8 +307,9 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="UI" type="Control" parent="." index="7"]
+[node name="UI" type="Control" parent="." index="6"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -413,7 +322,7 @@ mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-script = ExtResource( 10 )
+script = ExtResource( 8 )
 
 [node name="RespawnTimerContainer" type="VBoxContainer" parent="UI" index="0"]
 
@@ -479,16 +388,18 @@ exp_edit = false
 rounded = false
 percent_visible = true
 
-[node name="Spawners" type="Spatial" parent="." index="8"]
+[node name="Spawners" type="Spatial" parent="." index="7"]
+
+editor/display_folded = true
 
 [node name="Spawner_1" type="Spatial" parent="Spawners" index="0"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -19.9771, 0.34124, 0 )
-script = ExtResource( 11 )
+script = ExtResource( 9 )
 
 [node name="Spawner_2" type="Spatial" parent="Spawners" index="1"]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 29.924, 0.34124, 0 )
-script = ExtResource( 11 )
+script = ExtResource( 9 )
 
 

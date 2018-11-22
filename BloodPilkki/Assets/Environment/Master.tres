@@ -1,0 +1,107 @@
+[gd_resource type="ShaderMaterial" load_steps=11 format=2]
+
+[ext_resource path="res://Assets/Environment/Textures/snow_ARM.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Environment/Textures/ice_ARM.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Environment/Textures/snow_basecolor.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Environment/Textures/ice_basecolor.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Environment/Textures/test_alpha.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Environment/Textures/snow_height.png" type="Texture" id=6]
+[ext_resource path="res://Assets/Environment/Textures/ice_height.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Environment/Textures/snow_normal.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Environment/Textures/ice_normal.png" type="Texture" id=9]
+
+[sub_resource type="Shader" id=1]
+
+code = "shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx, unshaded;
+
+uniform sampler2D albedo_map1 : hint_albedo;
+uniform sampler2D albedo_map2 : hint_albedo;
+
+uniform sampler2D normal_map1 : hint_normal;
+uniform sampler2D normal_map2 : hint_normal;
+
+uniform sampler2D height_map1;
+uniform sampler2D height_map2;
+
+uniform sampler2D ARM_map1;
+uniform sampler2D ARM_map2;
+
+uniform sampler2D alpha_map;
+
+uniform bool use_height;
+uniform float height_intensity : hint_range(-1, 1);
+uniform float normal_scale : hint_range(-16,16);
+
+uniform vec3 uv1_scale  = vec3(1, 1, 1);
+uniform vec3 uv1_offset = vec3(0, 0, 0);
+
+uniform vec3 uv2_scale  = vec3(1, 1, 1);
+uniform vec3 uv2_offset = vec3(0, 0, 0);
+
+void vertex() {
+
+	vec2 base_uv = UV * uv1_scale.xy + uv1_offset.xy;
+	vec2 alpha_uv = UV * uv2_scale.xy + uv2_offset.xy;
+
+	float a =  texture(alpha_map, alpha_uv).r;
+
+	if (use_height) {
+		VERTEX.y += mix(0, height_intensity, a);
+		TANGENT = normalize ( vec3(0.0, mix(0, height_intensity, a), 0.4) );
+//		TANGENT = normalize( vec3(0.0, height(VERTEX.xz + vec2(0.0, 0.2), TIME, noise) - height(VERTEX.xz + vec2(0.0, -0.2), TIME, noise), 0.4));
+		BINORMAL = normalize( vec3( 0.4, mix(0, height_intensity, a), 0.0) );
+//		BINORMAL = normalize( vec3(0.4, height(VERTEX.xz + vec2(0.2, 0.0), TIME, noise) - height(VERTEX.xz + vec2(-0.2, 0.0), TIME, noise), 0.0));
+		NORMAL = cross(TANGENT, BINORMAL);
+	}
+		
+}
+
+void fragment() {
+	
+	vec2 base_uv = UV * uv1_scale.xy + uv1_offset.xy;
+	vec2 alpha_uv = UV * uv2_scale.xy + uv2_offset.xy;
+	
+	float h1 = texture(height_map1, base_uv).r;
+	float h2 = texture(height_map2, base_uv).r;
+	vec4 a =  texture(alpha_map, alpha_uv);	
+	vec4 b = vec4(1.0 - a.r, 1.0 - a.g, 1.0 - a.b, 1); // flip the mofo
+	
+	float height_difference = smoothstep(.25, .75, b.r);
+
+	vec3 albedo_mix = mix(texture(albedo_map1, base_uv).rgb, texture(albedo_map2, base_uv).rgb, height_difference);
+	vec3 normal_mix = mix(texture(normal_map1, base_uv).rgb, texture(normal_map2, base_uv).rgb, height_difference);
+	vec3 ARM_mix    = mix(texture(ARM_map1, base_uv).rgb, texture(ARM_map2, base_uv).rgb, height_difference);
+	
+	ALBEDO          = albedo_mix;	
+	NORMAL          = normal_mix;
+	NORMALMAP_DEPTH = normal_scale;	
+	AO              = ARM_mix.r;
+	ROUGHNESS       = ARM_mix.g;
+	METALLIC        = ARM_mix.b;
+		
+}"
+_sections_unfolded = [ "Resource" ]
+
+[resource]
+
+render_priority = 0
+shader = SubResource( 1 )
+shader_param/use_height = true
+shader_param/height_intensity = 0.25
+shader_param/normal_scale = 1.0
+shader_param/uv1_scale = Vector3( 5, 5, 5 )
+shader_param/uv1_offset = Vector3( 0, 0, 0 )
+shader_param/uv2_scale = Vector3( 1, 1, 1 )
+shader_param/uv2_offset = Vector3( 0, 0, 0 )
+shader_param/albedo_map1 = ExtResource( 3 )
+shader_param/albedo_map2 = ExtResource( 4 )
+shader_param/normal_map1 = ExtResource( 8 )
+shader_param/normal_map2 = ExtResource( 9 )
+shader_param/height_map1 = ExtResource( 6 )
+shader_param/height_map2 = ExtResource( 7 )
+shader_param/ARM_map1 = ExtResource( 1 )
+shader_param/ARM_map2 = ExtResource( 2 )
+shader_param/alpha_map = ExtResource( 5 )
+_sections_unfolded = [ "Resource", "shader_param" ]
+
