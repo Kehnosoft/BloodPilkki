@@ -18,9 +18,6 @@ func _process(delta):
 	
 func _update_ui():
 	var game_state = level.get_game_state()
-	var players = level.get_players()
-	var scores = level.get_scores()
-	var available_tasks = level.get_holes()
 	
 	# Show gamestate
 	var debug_game_state = find_node("DebugGameStateValue")
