@@ -25,9 +25,6 @@ var RESPAWN_TIMER = 10
 var HOLE_RESPAWN_TIMER = 10
 
 func _ready():
-
-	
-
 	Ui = find_node("UI")
 	Debug_ui = find_node("DebugUI")
 	if _debugging:
@@ -67,6 +64,10 @@ func _on_fishing_complete(fisher, score):
 func _end_game():
 	_game_state = Types.Game_states.ENDED
 	print("Game over")
+
+func _on_score_cap_hit(scores):
+	print(scores)
+	_end_game()
 
 
 ###########
