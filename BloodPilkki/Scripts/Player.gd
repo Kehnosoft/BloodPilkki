@@ -48,7 +48,12 @@ func _ready():
 	character = find_node("Character")
 	character.set_animation("idle")
 	hitpoints = 100.0
-
+	
+func set_player_color(col):
+	var mat = find_node("character").get_surface_material(0).duplicate()
+	mat.set_shader_param("albedo", col)
+	find_node("character").set_surface_material(0, mat)
+	
 func set_player_id(id):
 	player_id = id
 	player_id_string = "player_%d" % player_id

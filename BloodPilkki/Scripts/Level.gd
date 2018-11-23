@@ -18,6 +18,12 @@ var _holes = []				# Array of active holes in the ice
 var _scores = []
 var _spawners = []			# List of dead players
 
+var _colors = [
+	Color(1.0, 0.0, 0.0),
+	Color(0.0, 1.0, 0.0),
+	Color(0.0, 0.0, 1.0),
+]
+
 var RESPAWN_TIMER = 10
 var HOLE_RESPAWN_TIMER = 10
 
@@ -77,6 +83,7 @@ func _init_players():
 	var players = []
 	for player in get_node("Players").get_children():
 		player.set_player_id(len(players))
+		player.set_player_color(_colors[len(players)])
 		players.append(player)
 		_scores.append([player.player_id, 0])
 	return players

@@ -13,6 +13,8 @@ func set_animation(animation):
 		switch_animation("walk-loop")
 	if animation == "attack":
 		switch_animation("punch_heavy")
+	if animation == "damage":
+		switch_animation("damage")
 	if animation == "idle":
 		switch_animation("idle-loop")
 
