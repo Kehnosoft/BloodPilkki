@@ -12,3 +12,11 @@ enum Fish {
 	TROUT = 1,
 	SALMON = 2,
 }
+
+enum Animations {
+	IDLE = 0,
+	WALK = 1,
+	RUN = 2,
+	ATTACK = 3,
+	DAMAGE = 4
+}
