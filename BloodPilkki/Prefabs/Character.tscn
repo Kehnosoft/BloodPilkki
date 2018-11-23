@@ -5,7 +5,7 @@
 [ext_resource path="res://Assets/Environment/Textures/character_body_basecolor.png" type="Texture" id=3]
 [ext_resource path="res://Assets/character_face.material" type="Material" id=4]
 
-[sub_resource type="Shader" id=3]
+[sub_resource type="Shader" id=1]
 
 code = "shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
@@ -46,7 +46,7 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id=2]
 
 render_priority = 0
-shader = SubResource( 3 )
+shader = SubResource( 1 )
 shader_param/albedo = Color( 0.0856934, 0.409275, 0.914063, 1 )
 shader_param/specular = 0.5
 shader_param/metallic = 0.0
@@ -68,6 +68,10 @@ script = ExtResource( 2 )
 [node name="rig" parent="." index="0"]
 
 _sections_unfolded = [ "Transform" ]
+
+[node name="Skeleton" parent="rig" index="0"]
+
+_sections_unfolded = [ "bones" ]
 
 [node name="character" parent="rig/Skeleton" index="0"]
 

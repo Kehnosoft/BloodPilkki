@@ -30,7 +30,7 @@ var _action_target = null
 var _attack_target = null
 var _weapon = null
 
-const SPEED = 10
+const SPEED = 18.5
 const ACCEL = 3.5
 const DEACCEL = 8
 
@@ -138,7 +138,7 @@ func _handle_movement(delta):
 	
 	# Player animation
 	if Vector2(velocity.x, velocity.z).length() > ANIMATION_IDLE_LIMIT:
-		character.set_animation("run")
+		character.set_animation("run_punch")
 	else:
 		character.set_animation("idle")
 

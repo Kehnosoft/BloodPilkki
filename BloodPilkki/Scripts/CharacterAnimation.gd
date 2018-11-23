@@ -9,6 +9,8 @@ func _ready():
 func set_animation(animation):
 	if animation == "run":
 		switch_animation("run-loop")
+	if animation == "run_punch":
+		switch_animation("run_punch-loop")
 	if animation == "walk":
 		switch_animation("walk-loop")
 	if animation == "attack":

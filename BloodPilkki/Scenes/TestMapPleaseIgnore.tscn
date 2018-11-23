@@ -106,7 +106,7 @@ subdivide_depth = 25
 
 data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
 
-[node name="Root" type="Spatial" index="0"]
+[node name="Root" type="Spatial"]
 
 script = ExtResource( 1 )
 
@@ -152,7 +152,6 @@ _sections_unfolded = [ "Geometry", "Transform", "material" ]
 
 [node name="StaticBody" type="StaticBody" parent="Map/MeshInstance" index="0"]
 
-editor/display_folded = true
 input_ray_pickable = true
 input_capture_on_drag = false
 collision_layer = 1
