@@ -33,7 +33,7 @@ var _action_target = null
 var _attack_target = null
 var _weapon = null
 
-const SPEED = 10
+const SPEED = 18.5
 const ACCEL = 3.5
 const DEACCEL = 8
 

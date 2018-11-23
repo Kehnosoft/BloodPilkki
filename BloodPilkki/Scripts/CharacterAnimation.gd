@@ -5,6 +5,7 @@ var IDLE = "idle"
 var RUN = "run"
 var WALK = "walk"
 var ATTACK = "attack"
+var RUN_PUNCH = "run_punch"
 var DAMAGE = "damage"
 
 var animation_player
@@ -15,6 +16,7 @@ var mapping = {
 	Types.RUN: RUN,
 	Types.WALK: WALK,
 	Types.ATTACK: ATTACK,
+	Types.RUN_PUNCH: RUN_PUNCH,
 	Types.DAMAGE: DAMAGE
 }
 var animations = {
@@ -22,6 +24,7 @@ var animations = {
 	RUN: "run-loop",
 	WALK: "walk-loop",
 	ATTACK: "punch_heavy",
+	RUN_PUNCH: "run_punch-loop",
 	DAMAGE: "damage"
 }
 

@@ -18,5 +18,6 @@ enum Animations {
 	WALK = 1,
 	RUN = 2,
 	ATTACK = 3,
-	DAMAGE = 4
+	DAMAGE = 4,
+	RUN_PUNCH = 5,
 }
