@@ -1,5 +1,7 @@
 extends KinematicBody
 
+var Types = load("res://Scripts/Types.gd")
+
 var player_id = 0
 var player_id_string = ""
 var level = null
@@ -21,6 +23,7 @@ var _dead = false
 var _actioning = false
 var _attacking = false
 var _action_debounce = false
+var _returning_to_idle = false
 var _action_timer = 0.0
 var _attack_timer = 0.0
 var _current_attack_speed = 0.0
@@ -30,7 +33,7 @@ var _action_target = null
 var _attack_target = null
 var _weapon = null
 
-const SPEED = 10
+const SPEED = 18.5
 const ACCEL = 3.5
 const DEACCEL = 8
 
@@ -46,9 +49,14 @@ func _ready():
 	center = level.get_global_transform()
 	ui = level.find_node("UI")
 	character = find_node("Character")
-	character.set_animation("idle")
+	character.set_animation(Types.IDLE)
 	hitpoints = 100.0
-
+	
+func set_player_color(col):
+	var mat = find_node("character").get_surface_material(0).duplicate()
+	mat.set_shader_param("albedo", col)
+	find_node("character").set_surface_material(0, mat)
+	
 func set_player_id(id):
 	player_id = id
 	player_id_string = "player_%d" % player_id
@@ -132,10 +140,16 @@ func _handle_movement(delta):
 	velocity = move_and_slide(velocity, Vector3(0, 1, 0))
 	
 	# Player animation
-	if Vector2(velocity.x, velocity.z).length() > ANIMATION_IDLE_LIMIT:
-		character.set_animation("run")
-	else:
-		character.set_animation("idle")
+	var moving = Vector2(velocity.x, velocity.z).length() > ANIMATION_IDLE_LIMIT
+	if moving:
+		character.set_animation(Types.RUN)
+	
+	if not moving and not _attacking:
+		_returning_to_idle = true
+
+	if _returning_to_idle:
+		character.set_animation(Types.IDLE)
+		_returning_to_idle = false
 
 ############
 # Fighting #
@@ -165,10 +179,12 @@ func _try_start_attack(attack):
 		_current_attack_speed = attack[2]
 		for target in _available_attack_targets:
 			_attack(target, attack)
+		character.set_animation(Types.ATTACK)
 
 func _stop_the_attack():
 	_attacking = false
 	_attack_timer = 0.0
+	_returning_to_idle = true
 
 func _die():
 	print("%s dies" % self.name)
@@ -177,6 +193,7 @@ func _die():
 			
 func take_damage(damage):
 	if not _dead:
+		character.set_animation(Types.DAMAGE)
 		hitpoints -= damage
 		if hitpoints <= 0:
 			_die()
