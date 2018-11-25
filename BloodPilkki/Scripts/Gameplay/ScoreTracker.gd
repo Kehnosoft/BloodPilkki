@@ -5,6 +5,8 @@ signal score_cap_hit
 var scores = {}
 var MAX_SCORE = 50
 
+var _score_container = null
+
 func _ready():
 	print("Score module tracker added.")
 	var level = get_parent()
@@ -12,8 +14,16 @@ func _ready():
 	level.connect("player_added", self, "_on_player_added")
 	self.connect("score_cap_hit", level, "_on_score_cap_hit")
 	
+	self._score_container = self.find_node("ScoreTrackerContainer")
+	
 func _on_player_added(player):
 	scores[player.name] = 0
+	
+	var display_class = load("res://Prefabs/UI/PlayerScoreDisplay.tscn")
+	var score_display = display_class.instance()
+	self._score_container.add_child(score_display)
+	score_display.set_name("%s_score_display" % player.name)
+	score_display.init(player)
 
 func _on_score_added(player, score):
     scores[player.name] += score
