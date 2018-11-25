@@ -1,5 +1,7 @@
 extends "res://Scripts/Interactable.gd"
 
+signal fishing_complete
+
 var Types = load("res://Scripts/Types.gd")
 var Strings = load("res://Scripts/Strings.gd")
 
@@ -12,6 +14,7 @@ func _ready():
 	lifetime = 0
 	name = get_name()
 	randomize()
+	self.connect("fishing_complete", level, "_on_fishing_complete")
 
 func action_performed():
 	_begin_fishing(_actor)
@@ -71,5 +74,4 @@ func _fish(fisher, fish):
 	timer.queue_free()
 	
 	if caught_fish == true:
-		_print_message("%s caught %s!\n%s scored %d points.\n" % [fisher.name, fish.name, fisher.name, fish.score])
-		level.add_score(fisher.player_id, fish.score)
+		emit_signal("fishing_complete", fisher, fish.score)

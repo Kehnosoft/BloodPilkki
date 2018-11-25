@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scripts/Level.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Environment/Textures/WinterForest_Env.hdr" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Scripts/DebugUI.gd" type="Script" id=7]
 [ext_resource path="res://Scripts/UI.gd" type="Script" id=8]
 [ext_resource path="res://Scripts/Graveyard.gd" type="Script" id=9]
+[ext_resource path="res://Scripts/Gameplay/ScoreTracker.gd" type="Script" id=10]
 
 [sub_resource type="PanoramaSky" id=1]
 
@@ -112,7 +113,7 @@ script = ExtResource( 1 )
 
 [node name="Camera" type="Camera" parent="." index="0"]
 
-transform = Transform( 1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 45, 25 )
+transform = Transform( 1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 87.8452, 26.9801 )
 keep_aspect = 1
 cull_mask = 1048575
 environment = null
@@ -133,9 +134,11 @@ environment = SubResource( 2 )
 
 [node name="Map" type="Spatial" parent="." index="2"]
 
+editor/display_folded = true
+
 [node name="MeshInstance" type="MeshInstance" parent="Map" index="0"]
 
-transform = Transform( 50, 0, 0, 0, 50, 0, 0, 0, 50, 0, 0, 0 )
+transform = Transform( 50, 0, 0, 0, 50, 0, 0, 0, 50, 0.0115142, 1.19209e-007, 0.00629067 )
 layers = 1
 material_override = ExtResource( 3 )
 cast_shadow = 1
@@ -180,7 +183,6 @@ _sections_unfolded = [ "Transform" ]
 
 [node name="Players" type="Spatial" parent="." index="3"]
 
-editor/display_folded = true
 _sections_unfolded = [ "Transform", "Visibility" ]
 
 [node name="Player_1" parent="Players" index="0" instance=ExtResource( 5 )]
@@ -401,5 +403,62 @@ script = ExtResource( 9 )
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 29.924, 0.34124, 0 )
 script = ExtResource( 9 )
+
+[node name="ScoreTracker" type="Node" parent="." index="8"]
+
+script = ExtResource( 10 )
+
+[node name="ScoreTrackerContainer" type="VBoxContainer" parent="ScoreTracker" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 10.0
+margin_top = 74.0
+margin_right = 81.0
+margin_bottom = 114.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="Label" type="Label" parent="ScoreTracker/ScoreTrackerContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 71.0
+margin_bottom = 14.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "Score:"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+
+[node name="HSeparator" type="HSeparator" parent="ScoreTracker/ScoreTrackerContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 18.0
+margin_right = 71.0
+margin_bottom = 22.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
 
 

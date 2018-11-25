@@ -1,8 +1,12 @@
 extends Spatial
 
+signal player_added
+signal score_added
+
 var Types = load("res://Scripts/Types.gd")
 var Utils = load("res://Scripts/Utils.gd")
 var Items = load("res://Scripts/Items.gd")
+
 var Debug_ui = null
 var Ui = null
 var Printer = null
@@ -15,7 +19,6 @@ var _highest_score = 0
 
 var _players = []			# Array of competitors
 var _holes = []				# Array of active holes in the ice
-var _scores = []
 var _spawners = []			# List of dead players
 
 var RESPAWN_TIMER = 10
@@ -52,6 +55,8 @@ func _physics_process(delta):
 	else:
 		_respawn_timer += 0.1
 
+func _on_fishing_complete(fisher, score):
+	emit_signal("score_added", fisher, score)
 
 ##############
 # Game state #
@@ -59,15 +64,10 @@ func _physics_process(delta):
 func _end_game():
 	_game_state = Types.Game_states.ENDED
 	print("Game over")
-	
-func add_score(player_id, score_gain):
-	var player_score = _get_score(player_id)
-	if player_score:
-		var score = clamp(player_score[1] + score_gain, 0.0, 100.0)
-		player_score[1] = score
-		if score > _highest_score:
-			_highest_score = score
-		print("Player %s scored %d points %s" % [player_id, score_gain, _scores])
+
+func _on_score_cap_hit(scores):
+	print(scores)
+	_end_game()
 
 
 ###########
@@ -78,7 +78,7 @@ func _init_players():
 	for player in get_node("Players").get_children():
 		player.set_player_id(len(players))
 		players.append(player)
-		_scores.append([player.player_id, 0])
+		emit_signal("player_added", player)
 	return players
 	
 func _get_player_spawners():
@@ -118,14 +118,9 @@ func player_killed(player):
 func _get_holes():
 	var holes = []
 	for hole in get_node("Holes").get_children():
+		
 		holes.append(hole)
 	return holes
-	
-func _get_score(player_id):
-	for score in _scores:
-		if score[0] == player_id:
-			return score
-	return null
 	
 		
 ############
@@ -139,9 +134,6 @@ func get_players():
 	
 func get_holes():
 	return _holes
-	
-func get_scores():
-	return _scores
 	
 func get_respawn_time():
 	return _respawn_timer
