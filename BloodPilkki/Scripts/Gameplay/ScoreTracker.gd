@@ -10,17 +10,17 @@ var _score_container = null
 func _ready():
 	print("Score module tracker added.")
 	var level = get_parent()
-	level.connect("score_added", self, "_on_score_added")
-	level.connect("player_added", self, "_on_player_added")
-	self.connect("score_cap_hit", level, "_on_score_cap_hit")
+	level.connect("score_added", Callable(self, "_on_score_added"))
+	level.connect("player_added", Callable(self, "_on_player_added"))
+	self.connect("score_cap_hit", Callable(level, "_on_score_cap_hit"))
 	
-	self._score_container = self.find_node("ScoreTrackerContainer")
+	self._score_container = self.find_child("ScoreTrackerContainer")
 	
 func _on_player_added(player):
 	scores[player.name] = 0
 	
 	var display_class = load("res://Prefabs/UI/PlayerScoreDisplay.tscn")
-	var score_display = display_class.instance()
+	var score_display = display_class.instantiate()
 	self._score_container.add_child(score_display)
 	score_display.set_name("%s_score_display" % player.name)
 	score_display.init(player)

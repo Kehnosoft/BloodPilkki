@@ -24,11 +24,11 @@ const SPEED_MULTIPLIER = 20
 const STRIKE_SPEED = (SPEED_MAX + 3) * SPEED_MULTIPLIER
 
 func _ready():
-	indicator = find_node("Indicator")
-	strike_bar = find_node("StrikeProgress")
-	reaction_timer = find_node("ReactionTimer")
-	pow_sprite = find_node("Pow")
-	pow_sfx = find_node("PowSfx")
+	indicator = find_child("Indicator")
+	strike_bar = find_child("StrikeProgress")
+	reaction_timer = find_child("ReactionTimer")
+	pow_sprite = find_child("Pow")
+	pow_sfx = find_child("PowSfx")
 	pow_sprite.hide()
 	randomize()
 	
@@ -45,7 +45,7 @@ func _process(delta):
 				current_target_position = STRIKE_COUNTER_MAX
 			else:
 				get_new_direction()
-				get_speed()
+				get_velocity()
 				get_new_position()
 			print ("Direction: ", current_direction)
 			print ("Speed: ", current_speed)
@@ -96,7 +96,7 @@ func get_new_direction():
 	else:
 		current_direction = "left"
 	
-func get_speed():
+func get_velocity():
 	current_speed = ((randi() % SPEED_MAX) + 1) * SPEED_MULTIPLIER
 	
 func get_new_position():

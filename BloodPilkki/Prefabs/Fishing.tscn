@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/Fishing.gd" type="Script" id=1]
-[ext_resource path="res://Assets/Pow.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Pow.png" type="Texture2D" id=2]
 [ext_resource path="res://Assets/Pow.ogg" type="AudioStream" id=3]
 
 [node name="Fishing" type="Control"]
@@ -10,8 +10,8 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
+pivot_offset = Vector2( 0, 0 )
+clip_contents = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -24,12 +24,12 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 449.0
-margin_top = 189.0
-margin_right = 617.0
-margin_bottom = 255.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
+offset_left = 449.0
+offset_top = 189.0
+offset_right = 617.0
+offset_bottom = 255.0
+pivot_offset = Vector2( 0, 0 )
+clip_contents = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
@@ -50,7 +50,7 @@ wait_time = 2.0
 one_shot = true
 autostart = false
 
-[node name="Pow" type="Sprite" parent="." index="2"]
+[node name="Pow" type="Sprite2D" parent="." index="2"]
 
 visible = false
 position = Vector2( 543, 222.739 )

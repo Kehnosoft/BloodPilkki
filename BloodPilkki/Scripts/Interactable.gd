@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var ACTION_TIME = 0.0
 var _actor = null
@@ -9,8 +9,8 @@ func _ready():
 	_interaction_indicator = self.get_node("InteractionIndicator")
 	hide_action_indicator()
 	
-	get_node("InteractionArea").connect("area_entered", self, "_on_interaction_area_entered")
-	get_node("InteractionArea").connect("area_exited", self, "_on_interaction_area_exit")
+	get_node("InteractionArea").connect("area_entered", Callable(self, "_on_interaction_area_entered"))
+	get_node("InteractionArea").connect("area_exited", Callable(self, "_on_interaction_area_exit"))
     
 func _on_interaction_area_entered(area):
 	if "Player" in area.get_name() and not _actor:

@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var available = false
 
@@ -9,7 +9,7 @@ func _ready():
 
 func add_ghost(player):
 	_ghosts.append(player)
-	player.translation = self.translation
+	player.position = self.position
 	available = false
 
 func respawn_players():

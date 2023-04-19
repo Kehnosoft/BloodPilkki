@@ -9,7 +9,7 @@ var player_strength = 3.5
 
 func _ready():
 	randomize()
-	reel_in_bar = find_node("ReelInProgress")
+	reel_in_bar = find_child("ReelInProgress")
 	
 func strike():
 	var fish_list = _get_fish_list()
@@ -30,7 +30,9 @@ func _get_fish_list():
 	file.open("Scripts/fishes.json", File.READ)
 	var text = file.get_as_text()
 	file.close()
-	var fish_list = parse_json(text)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(text)
+	var fish_list = test_json_conv.get_data()
 	return fish_list
 			
 func _print_message(msg):

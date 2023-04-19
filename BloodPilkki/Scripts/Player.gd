@@ -1,4 +1,4 @@
-extends KinematicBody
+extends CharacterBody3D
 
 var Types = load("res://Scripts/Types.gd")
 
@@ -16,8 +16,7 @@ var fast_attack = [10.0, 15.0, FAST_ATTACK_SPEED]
 var heavy_attack = [15.0, 25.0, SLOW_ATTACK_SPEED]
 var damage_mod = 1.0
 
-var gravity = -9.8
-var velocity = Vector3()
+var player_velocity = Vector3()
 
 var _dead = false
 var _actioning = false
@@ -33,6 +32,7 @@ var _action_target = null
 var _attack_target = null
 var _weapon = null
 
+const GRAVITY = 9.8
 const SPEED = 18.5
 const ACCEL = 3.5
 const DEACCEL = 8
@@ -47,15 +47,16 @@ const ANIMATION_IDLE_LIMIT = 0.5
 func _ready():
 	level = get_owner()
 	center = level.get_global_transform()
-	ui = level.find_node("UI")
-	character = find_node("Character")
-	character.set_animation(Types.IDLE)
+	ui = level.find_child("UI")
+	character = find_child("Character")
+	character.set_animation(Types.Animations.IDLE)
 	hitpoints = 100.0
 	
 func set_player_color(col):
-	var mat = find_node("character").get_surface_material(0).duplicate()
-	mat.set_shader_param("albedo", col)
-	find_node("character").set_surface_material(0, mat)
+	#var mat = find_child("character").get_surface_override_material(0).duplicate()
+	#mat.set_shader_parameter("albedo", col)
+	#find_child("character").set_surface_override_material(0, mat)
+	pass
 	
 func set_player_id(id):
 	player_id = id
@@ -87,11 +88,11 @@ func _handle_movement(delta):
 	dir.y = 0
 	if Input.get_connected_joypads().size() > 0:
 		# Gamepad controls.
-		dir.x = Input.get_joy_axis(0, JOY_AXIS_0)
+		dir.x = Input.get_joy_axis(0, JOY_AXIS_LEFT_X)
 		if abs(dir.x) < DEAD_ZONE:
 			dir.x = 0.0
 			
-		dir.z = Input.get_joy_axis(0, JOY_AXIS_1)
+		dir.z = Input.get_joy_axis(0, JOY_AXIS_LEFT_Y)
 		if abs(dir.z) < DEAD_ZONE:
 			dir.z = 0.0
 			
@@ -106,7 +107,7 @@ func _handle_movement(delta):
 		dir += center.basis[0]
 	
 	dir = dir.normalized()
-	velocity.y += delta * gravity
+	velocity.y += delta * -GRAVITY
 	var hv = velocity
 	hv.y = 0
 	
@@ -134,21 +135,24 @@ func _handle_movement(delta):
 		else:
 			rotate_y(ROTATION_SPEED * rotation_direction_multiplier)
 	
-	hv = hv.linear_interpolate(new_pos, accel * delta)
+	hv = hv.lerp(new_pos, accel * delta)
 	velocity.x = hv.x
 	velocity.z = hv.z
-	velocity = move_and_slide(velocity, Vector3(0, 1, 0))
+	set_velocity(velocity)
+	set_up_direction(Vector3(0, 1, 0))
+	move_and_slide()
+	velocity = velocity
 	
 	# Player animation
 	var moving = Vector2(velocity.x, velocity.z).length() > ANIMATION_IDLE_LIMIT
 	if moving:
-		character.set_animation(Types.RUN)
+		character.set_animation(Types.Animations.RUN)
 	
 	if not moving and not _attacking:
 		_returning_to_idle = true
 
 	if _returning_to_idle:
-		character.set_animation(Types.IDLE)
+		character.set_animation(Types.Animations.IDLE)
 		_returning_to_idle = false
 
 ############
@@ -157,12 +161,12 @@ func _handle_movement(delta):
 func _handle_attacks():
 	# Attacks	
 	var key_fast_attack = Input.is_action_pressed('%s_fast_attack' % player_id_string) 
-	var pad_fast_attack = Input.is_joy_button_pressed(0, JOY_XBOX_X)
+	var pad_fast_attack = Input.is_joy_button_pressed(0, JOY_BUTTON_X)
 	if (key_fast_attack or pad_fast_attack):
 		_try_start_attack(fast_attack)
 		
 	var key_heavy_attack = Input.is_action_pressed('%s_heavy_attack' % player_id_string) 
-	var pad_heavy_attack = Input.is_joy_button_pressed(0, JOY_XBOX_Y)
+	var pad_heavy_attack = Input.is_joy_button_pressed(0, JOY_BUTTON_Y)
 	if (key_heavy_attack or pad_heavy_attack):
 		_try_start_attack(heavy_attack)
 		
@@ -179,7 +183,7 @@ func _try_start_attack(attack):
 		_current_attack_speed = attack[2]
 		for target in _available_attack_targets:
 			_attack(target, attack)
-		character.set_animation(Types.ATTACK)
+		character.set_animation(Types.Animations.ATTACK)
 
 func _stop_the_attack():
 	_attacking = false
@@ -193,7 +197,7 @@ func _die():
 			
 func take_damage(damage):
 	if not _dead:
-		character.set_animation(Types.DAMAGE)
+		character.set_animation(Types.Animations.DAMAGE)
 		hitpoints -= damage
 		if hitpoints <= 0:
 			_die()
@@ -208,7 +212,7 @@ func _attack(target, attack):
 		
 	var min_dmg = attack[0] * weapon_damage[0]
 	var max_dmg = attack[1] * weapon_damage[1]
-	var damage = rand_range(min_dmg, max_dmg)
+	var damage = randf_range(min_dmg, max_dmg)
 	target.take_damage(damage)
 	
 	var weapon_str = ""
@@ -223,7 +227,7 @@ func _attack(target, attack):
 func _handle_actions(delta):
 	# Actions
 	var key_action = Input.is_action_pressed('%s_action' % player_id_string) 
-	var pad_action = Input.is_joy_button_pressed(0, JOY_XBOX_A)
+	var pad_action = Input.is_joy_button_pressed(0, JOY_BUTTON_A)
 	if key_action or pad_action:
 		if _actioning and not _action_debounce:
 			_perform_timed_action(delta)

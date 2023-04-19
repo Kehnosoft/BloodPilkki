@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var fishing
 var fish_on
@@ -6,16 +6,16 @@ var fishing_ongoing
 var timer
 
 func _ready():
-	fishing = find_node("Fishing")
-	fish_on = find_node("FishOn")
+	fishing = find_child("Fishing")
+	fish_on = find_child("FishOn")
 	
-	fishing.connect("fishing_complete", self, "handle_fishing_complete")
-	fish_on.connect("fish_on_complete", self, "handle_fish_on_complete")
+	fishing.connect("fishing_complete", Callable(self, "handle_fishing_complete"))
+	fish_on.connect("fish_on_complete", Callable(self, "handle_fish_on_complete"))
 	
 	fishing.hide()
 	fish_on.hide()
 	
-	timer = find_node("FishingTimer")
+	timer = find_child("FishingTimer")
 	
 	fishing_ongoing = false
 
@@ -65,5 +65,5 @@ func handle_fish_on_complete(name, score):
 		print ("You caught %s and got %s points!" % [name, score])
 	fish_on.hide()
 	timer.start()
-	yield(timer, "timeout")
+	await timer.timeout
 	fishing_ongoing = false

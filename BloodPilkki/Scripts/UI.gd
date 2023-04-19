@@ -3,7 +3,7 @@ extends Control
 var Types = load("res://Scripts/Types.gd")
 
 var level = null
-var ready = false
+var ui_ready = false
 
 var respawn_timer = null
 var respawn_timer_bar = null
@@ -12,14 +12,14 @@ var respawn_time_left = null
 func _ready():
 	level = get_owner()
 	
-	respawn_timer = find_node("RespawnTimerContainer")
-	respawn_timer_bar = find_node("RespawnTimerProgressBar")
+	respawn_timer = find_child("RespawnTimerContainer")
+	respawn_timer_bar = find_child("RespawnTimerProgressBar")
 	#respawn_time_left = find_node("RespawnTimeLeft")
 
-	ready = true
+	ui_ready = true
 	
 func _process(delta):
-	if not ready:
+	if not ui_ready:
 		return
 	_update_ui()
 	

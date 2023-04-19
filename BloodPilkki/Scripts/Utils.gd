@@ -7,7 +7,7 @@ class Printer:
 		self._debugging = null
 		self._debug_ui = null
 		self._ui = null
-	 
+		
 	func print_message(message, debug_only=false):
 		if self._debugging:
 			print(message)

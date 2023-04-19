@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 signal player_added
 signal score_added
@@ -31,8 +31,8 @@ var RESPAWN_TIMER = 10
 var HOLE_RESPAWN_TIMER = 10
 
 func _ready():
-	Ui = find_node("UI")
-	Debug_ui = find_node("DebugUI")
+	Ui = find_child("UI")
+	Debug_ui = find_child("DebugUI")
 	if _debugging:
 		Debug_ui.show()
 	else:

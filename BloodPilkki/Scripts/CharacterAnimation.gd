@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var Types = load("res://Scripts/Types.gd")
 var IDLE = "idle"
@@ -12,12 +12,12 @@ var animation_player
 var _current_animation = null
 
 var mapping = {
-	Types.IDLE: IDLE,
-	Types.RUN: RUN,
-	Types.WALK: WALK,
-	Types.ATTACK: ATTACK,
-	Types.RUN_PUNCH: RUN_PUNCH,
-	Types.DAMAGE: DAMAGE
+	Types.Animations.IDLE: IDLE,
+	Types.Animations.RUN: RUN,
+	Types.Animations.WALK: WALK,
+	Types.Animations.ATTACK: ATTACK,
+	Types.Animations.RUN_PUNCH: RUN_PUNCH,
+	Types.Animations.DAMAGE: DAMAGE
 }
 var animations = {
 	IDLE: "idle-loop",
@@ -31,8 +31,8 @@ var animations = {
 var blendable_animations = [ATTACK, DAMAGE]
 
 func _ready():
-	animation_player = find_node("AnimationPlayer")
-	set_animation(Types.IDLE)
+	animation_player = find_child("AnimationPlayer")
+	set_animation(Types.Animations.IDLE)
 
 func set_animation(animation):
 	animation = mapping[animation]

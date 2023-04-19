@@ -15,5 +15,5 @@ class Weapon:
 			max_damage = max_damage
 		
 		for kwarg in kwargs:
-			if self.hasattr(kwarg):
+			if self.get(kwarg):
 				print(kwarg)

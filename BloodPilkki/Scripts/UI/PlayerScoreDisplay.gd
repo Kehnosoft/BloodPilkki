@@ -9,7 +9,7 @@ var _player_score_label = null
 
 func _ready():
 	var level = get_tree().get_root().get_node("Root")
-	level.connect("score_added", self, "_on_score_added")
+	level.connect("score_added", Callable(self, "_on_score_added"))
 	self._player_name_label = self.get_child(0)
 	self._player_score_label = self.get_child(1)
 	

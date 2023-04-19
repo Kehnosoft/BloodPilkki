@@ -1,22 +1,21 @@
-[gd_resource type="ShaderMaterial" load_steps=11 format=2]
+[gd_resource type="ShaderMaterial" load_steps=11 format=3 uid="uid://kfq4ci6bdykp"]
 
-[ext_resource path="res://Assets/Environment/Textures/snow_ARM.png" type="Texture" id=1]
-[ext_resource path="res://Assets/Environment/Textures/ice_ARM.png" type="Texture" id=2]
-[ext_resource path="res://Assets/Environment/Textures/snow_basecolor.png" type="Texture" id=3]
-[ext_resource path="res://Assets/Environment/Textures/ice_basecolor.png" type="Texture" id=4]
-[ext_resource path="res://Assets/Environment/Textures/test_alpha.png" type="Texture" id=5]
-[ext_resource path="res://Assets/Environment/Textures/snow_height.png" type="Texture" id=6]
-[ext_resource path="res://Assets/Environment/Textures/ice_height.png" type="Texture" id=7]
-[ext_resource path="res://Assets/Environment/Textures/snow_normal.png" type="Texture" id=8]
-[ext_resource path="res://Assets/Environment/Textures/ice_normal.png" type="Texture" id=9]
+[ext_resource type="Texture2D" uid="uid://cylufsm7n17qc" path="res://Assets/Environment/Textures/snow_ARM.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://dm4stvrt5cjfb" path="res://Assets/Environment/Textures/ice_ARM.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://bq761k427knoi" path="res://Assets/Environment/Textures/snow_basecolor.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://bkd1k85bilcsa" path="res://Assets/Environment/Textures/ice_basecolor.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://b8qgwy212lucn" path="res://Assets/Environment/Textures/test_alpha.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://cu53c3vjpbbiu" path="res://Assets/Environment/Textures/snow_height.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://e5tvjshp0g0k" path="res://Assets/Environment/Textures/ice_height.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://cjek74t6ovpau" path="res://Assets/Environment/Textures/snow_normal.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://drjqw1kwlwsd6" path="res://Assets/Environment/Textures/ice_normal.png" id="9"]
 
-[sub_resource type="Shader" id=1]
-
+[sub_resource type="Shader" id="1"]
 code = "shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx, unshaded;
 
-uniform sampler2D albedo_map1 : hint_albedo;
-uniform sampler2D albedo_map2 : hint_albedo;
+uniform sampler2D albedo_map1 : source_color;
+uniform sampler2D albedo_map2 : source_color;
 
 uniform sampler2D normal_map1 : hint_normal;
 uniform sampler2D normal_map2 : hint_normal;
@@ -75,33 +74,29 @@ void fragment() {
 	
 	ALBEDO          = albedo_mix;	
 	NORMAL          = normal_mix;
-	NORMALMAP_DEPTH = normal_scale;	
+	NORMAL_MAP_DEPTH = normal_scale;	
 	AO              = ARM_mix.r;
 	ROUGHNESS       = ARM_mix.g;
 	METALLIC        = ARM_mix.b;
 		
 }"
-_sections_unfolded = [ "Resource" ]
 
 [resource]
-
 render_priority = 0
-shader = SubResource( 1 )
-shader_param/use_height = true
-shader_param/height_intensity = 0.25
-shader_param/normal_scale = 1.0
-shader_param/uv1_scale = Vector3( 5, 5, 5 )
-shader_param/uv1_offset = Vector3( 0, 0, 0 )
-shader_param/uv2_scale = Vector3( 1, 1, 1 )
-shader_param/uv2_offset = Vector3( 0, 0, 0 )
-shader_param/albedo_map1 = ExtResource( 3 )
-shader_param/albedo_map2 = ExtResource( 4 )
-shader_param/normal_map1 = ExtResource( 8 )
-shader_param/normal_map2 = ExtResource( 9 )
-shader_param/height_map1 = ExtResource( 6 )
-shader_param/height_map2 = ExtResource( 7 )
-shader_param/ARM_map1 = ExtResource( 1 )
-shader_param/ARM_map2 = ExtResource( 2 )
-shader_param/alpha_map = ExtResource( 5 )
-_sections_unfolded = [ "Resource", "shader_param" ]
-
+shader = SubResource("1")
+shader_parameter/use_height = true
+shader_parameter/height_intensity = 0.25
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_scale = Vector3(5, 5, 5)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/albedo_map1 = ExtResource("3")
+shader_parameter/albedo_map2 = ExtResource("4")
+shader_parameter/normal_map1 = ExtResource("8")
+shader_parameter/normal_map2 = ExtResource("9")
+shader_parameter/height_map1 = ExtResource("6")
+shader_parameter/height_map2 = ExtResource("7")
+shader_parameter/ARM_map1 = ExtResource("1")
+shader_parameter/ARM_map2 = ExtResource("2")
+shader_parameter/alpha_map = ExtResource("5")
