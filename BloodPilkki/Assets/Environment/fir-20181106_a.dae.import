@@ -28,5 +28,16 @@ animation/fps=15
 animation/trimming=false
 animation/remove_immutable_tracks=true
 import_script/path=""
-_subresources={}
+_subresources={
+"materials": {
+"fir_leaves": {
+"use_external/enabled": true,
+"use_external/path": "res://Assets/Environment/fir_leaves.material"
+},
+"fir_wood": {
+"use_external/enabled": true,
+"use_external/path": "res://Assets/Environment/fir_wood.material"
+}
+}
+}
 gltf/embedded_image_handling=1

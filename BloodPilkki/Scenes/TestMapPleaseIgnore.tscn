@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://Scripts/Level.gd" id="1"]
 [ext_resource type="Material" uid="uid://kfq4ci6bdykp" path="res://Assets/Environment/Master.tres" id="3"]
-[ext_resource type="PackedScene" path="res://Prefabs/Tree.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://Prefabs/Player.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://epljit3upjwj" path="res://Prefabs/Tree.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://cy4ewqi57yitl" path="res://Prefabs/Player.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://Prefabs/Hole.tscn" id="6"]
 [ext_resource type="Script" path="res://Scripts/DebugUI.gd" id="7"]
 [ext_resource type="Script" path="res://Scripts/UI.gd" id="8"]
@@ -145,3 +145,6 @@ text = "Score:"
 
 [node name="HSeparator" type="HSeparator" parent="ScoreTracker/ScoreTrackerContainer"]
 layout_mode = 2
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.4389, 35.674, -34.0052)

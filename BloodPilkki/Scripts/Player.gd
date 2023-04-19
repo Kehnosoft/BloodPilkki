@@ -53,10 +53,9 @@ func _ready():
 	hitpoints = 100.0
 	
 func set_player_color(col):
-	#var mat = find_child("character").get_surface_override_material(0).duplicate()
-	#mat.set_shader_parameter("albedo", col)
-	#find_child("character").set_surface_override_material(0, mat)
-	pass
+	var mat = find_child("character").get_surface_override_material(0).duplicate()
+	mat.set_shader_parameter("albedo", col)
+	find_child("character").set_surface_override_material(0, mat)
 	
 func set_player_id(id):
 	player_id = id
